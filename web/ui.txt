@@ -1,0 +1,227 @@
+Product Requirements Document
+
+Product name: Short-Form Adaptive Learning Feed
+Inspiration: Uplearn + Instagram Reels
+Primary user: University student learning from uploaded course material
+
+1. Product Goal
+
+Create a vertically scrollable, short-form learning interface where each “reel” teaches one concept using the most effective interaction type for that subject. Progress is earned through interaction, not passive viewing.
+
+2. Core UX Principles
+
+Vertical, swipe-based navigation only.
+
+One concept per screen.
+
+Interaction is mandatory to advance progress.
+
+UI adapts to subject and concept type.
+
+Minimal chrome. Full-screen focus.
+
+3. Primary Screens
+3.1 Upload & Processing Screen
+
+Purpose: Allow user to upload course material and see processing status.
+
+UI Requirements
+
+File upload area (PDF, PPT, DOC).
+
+Course name input.
+
+Processing state indicator:
+
+Extracting topics
+
+Generating reels
+
+Ready
+
+Success State
+
+CTA: “Start Learning”
+
+Shows number of topics generated.
+
+3.2 Course Feed Screen (Main Experience)
+
+Purpose: Primary learning interface.
+
+Layout
+
+Full-screen vertical feed.
+
+One reel visible at a time.
+
+Swipe up/down to navigate.
+
+No horizontal gestures.
+
+Persistent Elements
+
+Top: course name + topic progress bar.
+
+Bottom right: subtle progress indicator.
+
+No visible menus during learning.
+
+4. Reel Types (UI Variants)
+
+The UI generator must support multiple reel templates. Each reel declares its ui_type and renders accordingly.
+
+4.1 Stepwise Transformation Reel (Math / Linear Algebra)
+
+Use case: Matrix reduction, derivations, proofs.
+
+Components
+
+Central content: matrix or equation block.
+
+Animated arrow indicating transformation.
+
+Step label (e.g. R2 → R2 − 2R1).
+
+“Why?” toggle reveals explanation.
+
+Interaction
+
+Tap “Next Step” to proceed.
+
+Progress advances per confirmed step.
+
+4.2 Definition Match Reel (Medicine / Biology / Law)
+
+Use case: Terminology memorization.
+
+Components
+
+Left: draggable terms.
+
+Right: definition cards.
+
+Visual feedback on correct match.
+
+Interaction
+
+Drag term onto definition.
+
+Reel completes only after all matches correct.
+
+4.3 Visual Labeling Reel
+
+Use case: Anatomy, diagrams, graphs.
+
+Components
+
+Central image.
+
+Label targets highlighted on tap.
+
+Labels appear when correctly placed.
+
+Interaction
+
+Tap or drag labels onto image.
+
+Partial progress allowed.
+
+4.4 Concept Explanation + Check
+
+Use case: Theory-heavy content.
+
+Components
+
+Short explanation text (max 3 bullets).
+
+Single conceptual question.
+
+2–4 answer choices.
+
+Interaction
+
+Select answer.
+
+Immediate feedback.
+
+Explanation on incorrect attempt.
+
+5. Progress & Feedback
+5.1 Topic Progress Bar
+
+One progress bar per major topic.
+
+Fills based on completed sub-concepts.
+
+Visible at top of feed.
+
+5.2 Reel Completion Rules
+
+Viewing alone does not count.
+
+Interaction completion required.
+
+Failed attempts do not advance progress.
+
+6. Navigation Rules
+
+Swipe up/down only.
+
+No skipping locked reels.
+
+Can revisit completed reels.
+
+Resume exactly where user stopped.
+
+7. Visual Style Guidelines
+
+Clean, high-contrast.
+
+Subject-specific accent colors:
+
+Math: blue/teal.
+
+Medicine: green.
+
+Law: dark neutral.
+
+Animations are subtle and instructional.
+
+Avoid gamified clutter.
+
+8. Accessibility
+
+Large tap targets.
+
+Clear contrast ratios.
+
+Animations must not obscure content.
+
+Optional text-only fallback per reel.
+
+9. Non-Goals
+
+No chat interface.
+
+No long-form reading views.
+
+No social features.
+
+No manual note editing.
+
+10. Output Expectations for UI Generator
+
+The UI generator should:
+
+Produce reusable reel templates.
+
+Support dynamic rendering based on ui_type.
+
+Maintain consistent vertical feed behavior.
+
+Allow easy addition of new reel types.
+
+11. One-Line Product Definition
+
+A short-form, adaptive learning feed where progress is earned through interaction, not scrolling.
