@@ -19,17 +19,6 @@
           <button class="button button-primary" type="button">Practice now</button>
         </div>
       </div>
-      <aside class="reel-side">
-        <button class="reel-icon" type="button">Like 128</button>
-        <button class="reel-icon" type="button">Notes</button>
-        <button class="reel-icon" type="button">Retry</button>
-      </aside>
-      <footer class="reel-footer">
-        <div class="reel-footer-title">Checkpoint prompt</div>
-        <div class="reel-footer-body">
-          Decompose (2x + 5) / (x^2 - 4) and write the integral setup.
-        </div>
-      </footer>
     </article>
 
     <article class="reel-card reel-card--ocean">
@@ -51,17 +40,6 @@
           <button class="button button-primary" type="button">Start drill</button>
         </div>
       </div>
-      <aside class="reel-side">
-        <button class="reel-icon" type="button">Like 96</button>
-        <button class="reel-icon" type="button">Share</button>
-        <button class="reel-icon" type="button">Quiz</button>
-      </aside>
-      <footer class="reel-footer">
-        <div class="reel-footer-title">Quick check</div>
-        <div class="reel-footer-body">
-          Does sum (3^n / n!) converge? Identify the test and the reason.
-        </div>
-      </footer>
     </article>
 
     <article class="reel-card reel-card--noir">
@@ -83,17 +61,6 @@
           <button class="button button-primary" type="button">Solve now</button>
         </div>
       </div>
-      <aside class="reel-side">
-        <button class="reel-icon" type="button">Like 74</button>
-        <button class="reel-icon" type="button">Timer</button>
-        <button class="reel-icon" type="button">Mastery</button>
-      </aside>
-      <footer class="reel-footer">
-        <div class="reel-footer-title">Try this</div>
-        <div class="reel-footer-body">
-          Find the surface area for y = x^2, 1 &lt;= x &lt;= 2 rotated about the x-axis.
-        </div>
-      </footer>
     </article>
   </div>
 </section>
