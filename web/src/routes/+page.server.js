@@ -61,5 +61,39 @@ export const actions = {
                 error: 'Failed to add course: ' + error.message
             }
         }
+    },
+
+    addFile: async ({ request }) => {
+        const data = await request.formData();
+        const courseCode = data.get('courseCode');
+        const file = data.get('file');
+        
+        if (!courseCode || !file) {
+            return { success: false, error: 'Missing fields' };
+        }
+
+        // Find relevant course ID
+        await client.connect();
+        const database = client.db("brainrejuvenate");
+        const courseCollection = database.collection("courses");
+        const courseDoc = await courseCollection.findOne({ courseCode: courseCode });
+        if (!courseDoc) {
+            return { success: false, error: 'Course not found' };
+        }
+        const courseId = courseDoc._id;
+
+        const fileCollection = database.collection("files");
+
+        fileDoc = {
+            courseId: courseId,
+            fileName: file.name,
+            fileType: file.type,
+            fileSize: file.size,
+            fileData: await file.arrayBuffer()
+        }
+
+        await fileCollection.insertOne(fileDoc);
+
+        return { success: true };
     }
 };
