@@ -1,5 +1,4 @@
 <script>
-  import client from "react-dom/client";
   import { enhance } from "$app/forms";
 
   let { data, actions } = $props();
