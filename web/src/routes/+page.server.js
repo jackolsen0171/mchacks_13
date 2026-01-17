@@ -66,6 +66,7 @@ export const actions = {
     addFile: async ({ request }) => {
         const data = await request.formData();
         const courseCode = data.get('courseCode');
+        const fileName = data.get('fileName');
         const file = data.get('file');
         
         if (!courseCode || !file) {
@@ -73,7 +74,6 @@ export const actions = {
         }
 
         // Find relevant course ID
-        await client.connect();
         const database = client.db("brainrejuvenate");
         const courseCollection = database.collection("courses");
         const courseDoc = await courseCollection.findOne({ courseCode: courseCode });
@@ -82,13 +82,12 @@ export const actions = {
         }
         const courseId = courseDoc._id;
 
+        // Insert file into files collection
         const fileCollection = database.collection("files");
 
         fileDoc = {
             courseId: courseId,
-            fileName: file.name,
-            fileType: file.type,
-            fileSize: file.size,
+            fileName: fileName,
             fileData: await file.arrayBuffer()
         }
 
