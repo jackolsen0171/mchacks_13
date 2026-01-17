@@ -6,6 +6,10 @@ const client = new MongoClient('mongodb+srv://clussy.ua97stz.mongodb.net/?authSo
   tlsCertificateKeyFile: credentials,
   serverApi: ServerApiVersion.v1
 });
+
+export { client };
+
+/*
 async function run() {
   try {
     await client.connect();
@@ -22,3 +26,5 @@ async function run() {
 }
 
 export { run }
+
+*/

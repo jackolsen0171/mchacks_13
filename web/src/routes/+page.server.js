@@ -1,10 +1,12 @@
-import { run } from '$lib/mongo_cert.js';
+import { client } from '$lib/mongo_cert.js';
 
 /** @type {import('./$types').PageLoad} */
 
 export async function load({ params }) {
-    const numberOfDocs = await run();
+    await client.connect();
+    const database = client.db("testDB");
+    database.runCursorCommand({ ping: 1 });
 	return {
-        numberOfDocs
+        success: true
 	};
 }
