@@ -50,7 +50,7 @@ textarea {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(248, 249, 251, 0.98) 100%);
 }
 
