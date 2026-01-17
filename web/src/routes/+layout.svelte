@@ -27,17 +27,13 @@
       <span class="icon-chip">D</span>
       <span>Dashboard</span>
     </a>
-    <a class={`nav-item ${isActive("/class") ? "is-active" : ""}`} href="/class" aria-current={isActive("/class") ? "page" : undefined}>
-      <span class="icon-chip">C</span>
-      <span>Classes</span>
+    <a class={`nav-item ${isActive("/upload") ? "is-active" : ""}`} href="/upload" aria-current={isActive("/upload") ? "page" : undefined}>
+      <span class="icon-chip">+</span>
+      <span>Upload</span>
     </a>
     <a class={`nav-item ${isActive("/study") ? "is-active" : ""}`} href="/study" aria-current={isActive("/study") ? "page" : undefined}>
       <span class="icon-chip">S</span>
       <span>Study</span>
-    </a>
-    <a class={`nav-item ${isActive("/upload") ? "is-active" : ""}`} href="/upload" aria-current={isActive("/upload") ? "page" : undefined}>
-      <span class="icon-chip">U</span>
-      <span>Upload</span>
     </a>
   </nav>
 </div>

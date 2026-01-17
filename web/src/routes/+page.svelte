@@ -49,7 +49,9 @@
   <ul>
     {#each data.courses as course}
       <li>
-        {course.courseCode} : {course.courseName}
+        <a href={`/class/${course.id}`}>
+          {course.courseCode} : {course.courseName}
+        </a>
       </li>
     {/each}
   </ul>
