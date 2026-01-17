@@ -1,26 +1,30 @@
 
 import { MongoClient, ServerApiVersion } from 'mongodb';
 
-const credentials = process.env.MONGO_CERT_PATH
+const pass = process.env.MONGO_DB_PASS;
+const uri = "mongodb+srv://newuser2:" + pass + "@clussy.ua97stz.mongodb.net/?appName=Clussy";
 
-const client = new MongoClient('mongodb+srv://clussy.ua97stz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&appName=Clussy', {
-  tlsCertificateKeyFile: credentials,
-  serverApi: ServerApiVersion.v1
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
 async function run() {
   try {
+    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const database = client.db("testDB");
     const collection = database.collection("testCol");
     const docCount = await collection.countDocuments({});
-    console.log(docCount);
-    // perform actions using client
+    return docCount
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
   }
 }
-run().catch(console.dir);
 
 export { run }
