@@ -18,11 +18,6 @@
 </svelte:head>
 
 <div class="app-shell">
-  <header class="app-header">
-    <div class="app-title">Adaptive Study</div>
-    <button class="help-chip" type="button">How it works</button>
-  </header>
-
   <main class="app-main">
     {@render children()}
   </main>
