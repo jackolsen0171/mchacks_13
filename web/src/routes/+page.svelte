@@ -1,6 +1,5 @@
 <script>
   import { enhance } from "$app/forms";
-
   let { data, actions } = $props();
   let addCourseModalOpen = $state(false);
 </script>
@@ -45,14 +44,17 @@
 {/if}
 
 <!-- Courses List -->
-
+<h2>Courses</h2>
 {#if data.courses && data.courses.length > 0}
   <ul>
     {#each data.courses as course}
-      <li>{course.courseCode}</li>
-      <li>{course.courseName}</li>
+      <li>
+        {course.courseCode} : {course.courseName}
+      </li>
     {/each}
   </ul>
+{:else}
+  <p>No courses found</p>
 {/if}
 
 <style lang="postcss">

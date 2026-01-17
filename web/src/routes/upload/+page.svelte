@@ -1,3 +1,7 @@
+<script>
+  let { data, actions } = $props();
+</script>
+
 <section>
   <h1 class="section-title">Upload Materials</h1>
   <p class="section-subtitle">
@@ -10,47 +14,73 @@
       <h2 class="upload-title">Drag and drop files here</h2>
       <p class="upload-hint">PDF, DOCX, PPT, or images. Max 25 MB per file.</p>
       <div class="upload-actions">
-        <button class="button button-primary" type="button">Choose files</button>
-        <button class="button button-secondary" type="button">Scan from phone</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <div>
-        <h2 class="section-title">Recent uploads</h2>
-        <p class="section-subtitle">We will confirm each file when processing.</p>
-      </div>
-      <span class="pill">3 items</span>
-    </div>
-
-    <ul class="file-list">
-      <li class="list-item">
-        <div>
-          <strong>Week 7: Differential Equations</strong>
-          <div class="file-meta">
-            <span>PDF • 4.2 MB</span>
-            <span>Uploaded 2 minutes ago</span>
+        <form method="POST" action="?/addFile" enctype="multipart/form-data">
+          <div class="upload-field">
+            <label class="upload-label" for="courseSelect">Course</label>
+            <select
+              class="upload-select"
+              id="courseSelect"
+              name="courseId"
+              required
+            >
+              <option value="" disabled selected>Select a course</option>
+              {#if data?.courses?.length}
+                {#each data.courses as course}
+                  <option value={course.id}>
+                    {course.courseCode} · {course.courseName}
+                  </option>
+                {/each}
+              {:else}
+                <option value="" disabled>No courses available</option>
+              {/if}
+            </select>
           </div>
-        </div>
-        <span class="status-chip is-pending">Processing</span>
-      </li>
-      <li class="list-item">
-        <div>
-          <strong>Lecture 10 Notes</strong>
-          <div class="file-meta">
-            <span>DOCX • 1.1 MB</span>
-            <span>Uploaded 1 hour ago</span>
-          </div>
-        </div>
-        <span class="status-chip">Ready</span>
-      </li>
-    </ul>
-
-    <div class="divider"></div>
-    <div class="empty-state">
-      Nothing else in the queue. Upload more files to expand your adaptive study set.
+          <input
+            class="upload-file"
+            type="file"
+            id="fileInput"
+            name="file"
+            multiple
+            required
+          />
+          <button class="upload-button" type="submit">Upload</button>
+        </form>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .upload-field {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .upload-label {
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .upload-select {
+    border: 1px solid #cbd5f5;
+    border-radius: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: #fff;
+    color: #0f172a;
+  }
+
+  .upload-file {
+    border: 1px dashed #cbd5f5;
+    border-radius: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: #f8fafc;
+  }
+
+  .upload-button {
+    border: 1px solid #cbd5f5;
+    border-radius: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: #f8fafc;
+  }
+</style>
