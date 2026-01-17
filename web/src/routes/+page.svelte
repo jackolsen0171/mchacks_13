@@ -1,3 +1,7 @@
+<script>
+  let { data } = $props();
+</script>
+
 <section>
   <h1 class="section-title">Fall 2024 Semester</h1>
   <p class="section-subtitle">7 weeks remaining. Next check-in every Monday.</p>
@@ -25,7 +29,9 @@
     </div>
     <div class="button-row">
       <button class="button button-primary" type="button">Add a class</button>
-      <button class="button button-secondary" type="button">Edit semester</button>
+      <button class="button button-secondary" type="button"
+        >Edit semester</button
+      >
     </div>
   </div>
 
@@ -33,7 +39,9 @@
     <div class="card-header">
       <div>
         <h2 class="section-title">Your Classes</h2>
-        <p class="section-subtitle">Pick a class to review materials or start a session.</p>
+        <p class="section-subtitle">
+          Pick a class to review materials or start a session.
+        </p>
       </div>
       <span class="pill">Updated today</span>
     </div>
@@ -71,7 +79,16 @@
     </div>
     <div class="divider"></div>
     <div class="empty-state">
-      No new classes this week. Add a course if you enroll late or switch sections.
+      No new classes this week. Add a course if you enroll late or switch
+      sections.
     </div>
+  </div>
+
+  <div>
+    <button
+      onclick={() => console.log(data)}
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >Click me</button
+    >
   </div>
 </section>
