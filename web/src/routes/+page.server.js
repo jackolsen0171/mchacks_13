@@ -73,26 +73,38 @@ export const actions = {
             return { success: false, error: 'Missing fields' };
         }
 
-        // Find relevant course ID
-        const database = client.db("brainrejuvenate");
-        const courseCollection = database.collection("courses");
-        const courseDoc = await courseCollection.findOne({ courseCode: courseCode });
-        if (!courseDoc) {
-            return { success: false, error: 'Course not found' };
+        try {
+            // Find relevant course ID
+            const database = client.db("brainrejuvenate");
+            const courseCollection = database.collection("courses");
+            const courseDoc = await courseCollection.findOne({ courseCode: courseCode });
+            if (!courseDoc) {
+                return { success: false, error: 'Course not found' };
+            }
+            const courseId = courseDoc._id;
+
+            // Insert file into files collection
+            const fileCollection = database.collection("files");
+
+            fileDoc = {
+                courseId: courseId,
+                fileName: fileName,
+                fileData: await file.arrayBuffer()
+            }
+
+            const result = await fileCollection.insertOne(fileDoc);
+
+            return {
+                success: true,
+                message: 'File added successfully',
+                id: result.insertedId?.toString()
+            };
+
+        } catch (error) {
+            return {
+                success: false,
+                error: 'Failed to add file: ' + error.message
+            }
         }
-        const courseId = courseDoc._id;
-
-        // Insert file into files collection
-        const fileCollection = database.collection("files");
-
-        fileDoc = {
-            courseId: courseId,
-            fileName: fileName,
-            fileData: await file.arrayBuffer()
-        }
-
-        await fileCollection.insertOne(fileDoc);
-
-        return { success: true };
     }
 };
