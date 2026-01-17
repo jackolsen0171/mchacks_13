@@ -1,3 +1,4 @@
+// DON'T USE THIS FILE. CERTIFICATE AUTH CURRENTLY BEING USED.
 
 import { MongoClient, ServerApiVersion } from 'mongodb';
 
