@@ -6,10 +6,23 @@ export const prerender = false;
 
 export async function load({ params }) {
     await client.connect();
-    const database = client.db("testDB");
+    const database = client.db("brainrejuvenate");
+    const collection = database.collection("courses");
+
+    // Fetching courses
+    const courses = await collection.find({}).toArray();
+
+    const coursesData = courses.map(course => ({
+        id: course._id.toString(),
+        courseCode: course.courseCode,
+        courseName: course.courseName,
+        createdAt: course.createdAt.toISOString()
+    }))
+
     database.runCursorCommand({ ping: 1 });
     return {
-        success: true
+        success: true,
+        courses: coursesData
     };
 }
 
@@ -24,13 +37,29 @@ export const actions = {
             return { success: false, error: 'Missing fields' };
         }
 
-        // Add course to database 
-        const database = client.db("testDB");
+        try {
+            // Get database and collection
+            const database = client.db("brainrejuvenate");
+            const collection = database.collection("courses");
 
+            // Insert course 
+            const result = await collection.insertOne({
+                courseCode: courseCode,
+                courseName: courseName,
+                createdAt: new Date()
+            })
 
+            return {
+                success: true,
+                message: 'Course added successfully',
+                id: result.insertedId?.toString()
+            };
 
-        return { success: true };
+        } catch (error) {
+            return {
+                success: false,
+                error: 'Failed to add course: ' + error.message
+            }
+        }
     }
 };
-
-

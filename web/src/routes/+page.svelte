@@ -1,5 +1,6 @@
 <script>
   import client from "react-dom/client";
+  import { enhance } from "$app/forms";
 
   let { data, actions } = $props();
   let addCourseModalOpen = $state(false);
@@ -25,12 +26,34 @@
   >Add Course</button
 >
 
+<!-- Add Course Modal -->
 {#if addCourseModalOpen === true}
-  <form method="POST" action="?/addCourse">
+  <form
+    method="POST"
+    action="?/addCourse"
+    use:enhance={() =>
+      ({ result }) => {
+        console.log("form result", result);
+        if (result?.type === "success") {
+          addCourseModalOpen = false;
+        }
+      }}
+  >
     <input style="border: 1px solid black;" name="courseCode" />
     <input style="border: 1px solid black;" name="courseName" />
     <button type="submit">Add</button>
   </form>
+{/if}
+
+<!-- Courses List -->
+
+{#if data.courses && data.courses.length > 0}
+  <ul>
+    {#each data.courses as course}
+      <li>{course.courseCode}</li>
+      <li>{course.courseName}</li>
+    {/each}
+  </ul>
 {/if}
 
 <style lang="postcss">
