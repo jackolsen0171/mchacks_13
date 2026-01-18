@@ -1,5 +1,14 @@
 <script>
+  import { enhance } from "$app/forms";
+
   let { data } = $props();
+  let selectedFileName = $state(null);
+  let isSubmitting = $state(false);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    selectedFileName = file ? file.name : null;
+  };
 </script>
 
 <section class="upload-page">
@@ -28,7 +37,23 @@
       method="POST"
       action="?/addFile"
       enctype="multipart/form-data"
+      use:enhance={() => {
+        isSubmitting = true;
+        return async ({ result, update }) => {
+          isSubmitting = false;
+          if (result?.type === "success") {
+            selectedFileName = null;
+            if (update) await update();
+          }
+        };
+      }}
     >
+      {#if isSubmitting}
+        <div class="loading-overlay">
+          <div class="spinner"></div>
+          <p class="loading-text">Uploading file...</p>
+        </div>
+      {/if}
       <div class="form-header">
         <h2>Upload materials</h2>
         <p>Select a course and add files to grow your knowledge tree.</p>
@@ -50,18 +75,35 @@
         </select>
       </div>
 
-      <label class="dropzone" for="fileInput">
-        <input id="fileInput" name="content_file" type="file" required />
+      <label class="dropzone" class:has-file={selectedFileName} for="fileInput">
+        <input
+          id="fileInput"
+          name="content_file"
+          type="file"
+          required
+          onchange={handleFileChange}
+          disabled={isSubmitting}
+        />
         <div class="dropzone-inner">
-          <p class="drop-title">Drag files here</p>
-          <p class="drop-subtitle">
-            or browse to select files from your device
-          </p>
+          {#if selectedFileName}
+            <div class="file-selected">
+              <span class="file-icon">📄</span>
+              <span class="file-name">{selectedFileName}</span>
+              <span class="file-ready">Ready to upload</span>
+            </div>
+          {:else}
+            <p class="drop-title">Drag files here</p>
+            <p class="drop-subtitle">
+              or browse to select files from your device
+            </p>
+          {/if}
         </div>
       </label>
 
       <div class="form-actions">
-        <button class="primary-button" type="submit">Upload files</button>
+        <button class="primary-button" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Uploading..." : "Upload files"}
+        </button>
       </div>
     </form>
 
@@ -262,6 +304,84 @@
     background: var(--accent-indigo);
     color: #fff;
     box-shadow: 0 14px 30px rgba(75, 95, 215, 0.3);
+    transition: opacity 0.2s ease;
+  }
+
+  .primary-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Loading Overlay */
+  .upload-form {
+    position: relative;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 10;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(75, 95, 215, 0.15);
+    border-top-color: var(--accent-indigo);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loading-text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--primary);
+    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+    font-weight: 600;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* File Selected State */
+  .dropzone.has-file {
+    border-color: var(--accent-green);
+    border-style: solid;
+    background: rgba(46, 125, 111, 0.08);
+  }
+
+  .file-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .file-icon {
+    font-size: 2rem;
+  }
+
+  .file-name {
+    font-weight: 700;
+    color: var(--primary);
+    word-break: break-all;
+    text-align: center;
+  }
+
+  .file-ready {
+    font-size: 0.85rem;
+    color: var(--accent-green);
+    font-weight: 600;
   }
 
   .upload-side h2 {

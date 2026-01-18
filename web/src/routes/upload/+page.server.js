@@ -132,46 +132,62 @@ export const actions = {
 
         let result;
         let isDone = false;
-        for (let attempt = 0; attempt < 12; attempt += 1) {
+
+        // Poll for up to 60 seconds (first-time processing can take longer)
+        for (let attempt = 0; attempt < 60; attempt += 1) {
           const response = await fetch(url, {
             method: 'GET',
             headers: headers,
           });
           result = await response.json();
-          isDone =
+
+          // Only consider done when state is complete AND outputs exist
+          const stateComplete =
             result?.state === 'DONE' ||
             result?.status === 'completed' ||
             result?.status === 'succeeded';
+          const hasOutputs =
+            result?.outputs?.title &&
+            result?.outputs?.topic;
+
+          isDone = stateComplete && hasOutputs;
+
           if (isDone) {
+            console.log("Reel generation complete, outputs received");
             break;
+          }
+
+          if (attempt % 10 === 0) {
+            console.log(`Waiting for reel generation... attempt ${attempt + 1}/60`);
           }
           await sleep(1000);
         }
 
-        const reels = isDone ? result : [];
-        const titles = reels.outputs.title;
-        const topics = reels.outputs.topic;
-        const theory_reels = reels.outputs.theory_reel;
-        const test_reels = reels.outputs.test_reel;
+        if (isDone) {
+          const titles = result.outputs.title;
+          const topics = result.outputs.topic;
+          const theory_reels = result.outputs.theory_reel;
+          const test_reels = result.outputs.test_reel;
 
-        const reelsCollection = database.collection("reels");
+          const reelsCollection = database.collection("reels");
 
-        for (let i = 0; i < topics.length; i++) {
-          let reelDoc = {
-            courseId: courseDoc._id,
-            courseName: courseDoc.courseName,
-            fileId: file_result.insertedId,
-            title: titles[i],
-            topic: topics[i],
-            theory_reel: theory_reels[i],
-            test_reel: test_reels[i],
-            // 0 is the theory 
-            // 1 is the test 
-            level: 0,
-            createdAt: new Date()
+          for (let i = 0; i < topics.length; i++) {
+            let reelDoc = {
+              courseId: courseDoc._id,
+              courseName: courseDoc.courseName,
+              fileId: file_result.insertedId,
+              title: titles[i],
+              topic: topics[i],
+              theory_reel: theory_reels[i],
+              test_reel: test_reels[i],
+              level: 0,
+              createdAt: new Date()
+            }
+            const reels_result = await reelsCollection.insertOne(reelDoc);
+            console.log("Reel added successfully: ", reels_result.insertedId?.toString());
           }
-          const reels_result = await reelsCollection.insertOne(reelDoc);
-          console.log("Reel added successfully: ", reels_result.insertedId?.toString());
+        } else {
+          console.log("Reel generation timed out or failed - outputs not received");
         }
 
         // Output topics to console
@@ -187,7 +203,7 @@ export const actions = {
       return {
         success: true,
         message: 'File added successfully',
-        id: reels_result.insertedId?.toString()
+        id: file_result.insertedId?.toString()
       };
 
     } catch (error) {
