@@ -255,7 +255,7 @@
     text-transform: uppercase;
     letter-spacing: 0.2em;
     font-size: 0.75rem;
-    color: var(--accent-indigo);
+    color: #656d3f;
     margin-bottom: 0.5rem;
   }
 

@@ -210,12 +210,12 @@
 
 <style>
   :global(:root) {
-    --primary: #1f2a44;
-    --background: #f8f9fb;
-    --surface: #ffffff;
-    --border: #e4e7ec;
-    --accent-green: #2e7d6f;
-    --accent-indigo: #4b5fd7;
+    --primary: #492828;
+    --background: #efe9e3;
+    --surface: #efe9e3;
+    --border: #492828;
+    --accent-green: #84934a;
+    --accent-indigo: #656d3f;
   }
 
   :global(html) {
@@ -228,11 +228,7 @@
     display: grid;
     font-family: "Fraunces", "Times New Roman", serif;
     min-height: 100dvh;
-    background: linear-gradient(
-      180deg,
-      rgba(31, 42, 68, 0.06),
-      rgba(248, 249, 251, 0.92)
-    );
+    background: #fffaf6;
     padding-top: calc(env(safe-area-inset-top) + 1.5rem);
   }
 
@@ -243,7 +239,7 @@
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     padding: 0;
-    scrollbar-color: rgba(31, 42, 68, 0.25) transparent;
+    scrollbar-color: rgba(73, 40, 40, 0.25) transparent;
   }
 
   .reel-card {
@@ -255,44 +251,34 @@
     gap: 1.8rem;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(
-      160deg,
-      rgba(75, 95, 215, 0.06),
-      rgba(46, 125, 111, 0.12) 55%,
-      #ffffff 100%
-    );
+    background: var(--surface);
     border: 1px solid var(--border);
-    box-shadow: 0 18px 40px rgba(31, 42, 68, 0.08);
+    box-shadow: 0 18px 40px rgba(73, 40, 40, 0.12);
   }
 
   .reel-card::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-        circle at top left,
-        rgba(46, 125, 111, 0.16),
-        transparent 55%
-      ),
-      radial-gradient(
-        circle at bottom right,
-        rgba(75, 95, 215, 0.18),
-        transparent 55%
-      );
-    opacity: 0.9;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0)
+    );
+    opacity: 0.7;
     pointer-events: none;
   }
 
   .reel-card--lumen {
-    --reel-accent: rgba(46, 125, 111, 0.35);
+    --reel-accent: rgba(132, 147, 74, 0.28);
   }
 
   .reel-card--tide {
-    --reel-accent: rgba(75, 95, 215, 0.32);
+    --reel-accent: rgba(101, 109, 63, 0.25);
   }
 
   .reel-card--ember {
-    --reel-accent: rgba(31, 42, 68, 0.2);
+    --reel-accent: rgba(73, 40, 40, 0.16);
   }
 
   .reel-rail {
@@ -304,7 +290,7 @@
       var(--reel-accent) 45%,
       transparent 75%
     );
-    opacity: 0.75;
+    opacity: 0.35;
     pointer-events: none;
   }
 
@@ -320,7 +306,7 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-size: 0.7rem;
-    color: var(--accent-green);
+    color: #656d3f;
     font-weight: 700;
   }
 
@@ -328,11 +314,12 @@
     margin: 0;
     font-size: 1.6rem;
     line-height: 1.2;
+    color: var(--primary);
   }
 
   .reel-content p {
     margin: 0;
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.7);
     max-width: 36rem;
   }
 
@@ -345,9 +332,9 @@
   .reel-block {
     padding: 1.1rem 1.2rem;
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(31, 42, 68, 0.1);
-    box-shadow: 0 12px 24px rgba(31, 42, 68, 0.08);
+    background: var(--background);
+    border: 1px solid rgba(73, 40, 40, 0.18);
+    box-shadow: 0 12px 24px rgba(73, 40, 40, 0.12);
     display: grid;
     gap: 0.6rem;
     min-height: 12rem;
@@ -375,7 +362,7 @@
     gap: 0.5rem;
     padding: 0.35rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid var(--border);
     width: fit-content;
   }
@@ -388,19 +375,19 @@
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.02em;
-    color: rgba(31, 42, 68, 0.6);
+    color: rgba(73, 40, 40, 0.6);
     cursor: pointer;
   }
 
   .reel-tab:disabled {
-    color: rgba(82, 96, 122, 0.4);
+    color: rgba(73, 40, 40, 0.4);
     cursor: not-allowed;
   }
 
   .reel-tab.active {
-    background: #ffffff;
+    background: #fffaf6;
     color: var(--primary);
-    box-shadow: 0 8px 16px rgba(31, 42, 68, 0.12);
+    box-shadow: 0 8px 16px rgba(73, 40, 40, 0.12);
   }
 
   .reel-action {
@@ -412,9 +399,9 @@
     border-radius: 999px;
     padding: 0.55rem 1.4rem;
     font-weight: 700;
-    background: var(--accent-indigo);
+    background: var(--accent-green);
     color: #fff;
-    box-shadow: 0 12px 24px rgba(75, 95, 215, 0.3);
+    box-shadow: 0 12px 24px rgba(132, 147, 74, 0.3);
     cursor: pointer;
   }
 
@@ -440,8 +427,8 @@
     align-items: start;
     padding: 0.7rem 0.9rem;
     border-radius: 14px;
-    border: 1px solid rgba(31, 42, 68, 0.12);
-    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(73, 40, 40, 0.18);
+    background: rgba(255, 255, 255, 0.7);
     color: var(--primary);
     cursor: pointer;
     text-align: left;
@@ -453,7 +440,7 @@
 
   .reel-test-option.selected.correct {
     border-color: var(--accent-green);
-    box-shadow: 0 10px 18px rgba(46, 125, 111, 0.2);
+    box-shadow: 0 10px 18px rgba(132, 147, 74, 0.2);
   }
 
   .reel-test-option.selected.incorrect {
@@ -467,7 +454,7 @@
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(75, 95, 215, 0.16);
+    background: rgba(132, 147, 74, 0.18);
     color: var(--primary);
     font-weight: 700;
     font-size: 0.75rem;
@@ -481,7 +468,7 @@
   }
 
   .reel-test-feedback.correct {
-    background: rgba(46, 125, 111, 0.14);
+    background: rgba(132, 147, 74, 0.14);
     color: var(--primary);
   }
 
@@ -510,12 +497,12 @@
   }
 
   :global(.reels-viewport::-webkit-scrollbar-thumb) {
-    background: rgba(31, 42, 68, 0.2);
+    background: rgba(73, 40, 40, 0.2);
     border-radius: 999px;
   }
 
   :global(.reels-viewport::-webkit-scrollbar-thumb:hover) {
-    background: rgba(31, 42, 68, 0.32);
+    background: rgba(73, 40, 40, 0.32);
   }
 
   .reel-markdown :global(p) {
