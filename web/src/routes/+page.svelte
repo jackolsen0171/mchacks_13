@@ -284,8 +284,8 @@
   .dashboard-header {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
     gap: 1.5rem;
   }
 
@@ -303,7 +303,7 @@
   }
 
   .subtitle {
-    margin: 0 auto;
+    margin: 0;
     color: rgba(73, 40, 40, 0.75);
     max-width: 32rem;
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
@@ -311,7 +311,7 @@
 
   .controls {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
   }
