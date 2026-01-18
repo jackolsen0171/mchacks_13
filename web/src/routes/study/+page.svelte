@@ -37,16 +37,17 @@
   const parseTest = (text) => {
     if (!text) return null;
     const cleaned = text.replace(/\r/g, "");
-    const questionMatch = cleaned.match(/question:\s*(.*)/i);
+    const plain = cleaned.replace(/[*_`]/g, "");
+    const questionMatch = plain.match(/question:\s*(.+)/i);
     const question = questionMatch?.[1]?.trim() ?? null;
     const options = [];
-    const optionRegex = /(^|\n)\s*([A-D])[\)\.]\s*(.+)/g;
+    const optionRegex = /(^|\n)\s*(?:[-*]\s*)?([A-D])[\)\.\:]?\s+(.+)/g;
     let match;
-    while ((match = optionRegex.exec(cleaned)) !== null) {
+    while ((match = optionRegex.exec(plain)) !== null) {
       options.push({ key: match[2], text: match[3].trim() });
     }
-    const answerMatch = cleaned.match(/correct answer:\s*([A-D])/i);
-    const answer = answerMatch?.[1]?.toUpperCase() ?? null;
+    const answerMatch = plain.match(/(correct answer|answer):\s*([A-D])/i);
+    const answer = answerMatch?.[2]?.toUpperCase() ?? null;
     if (!question || options.length === 0 || !answer) {
       return null;
     }
@@ -54,6 +55,7 @@
   };
 
   const selectOption = (reel, optionKey) => {
+    if (testSelections[reel.instanceId]) return;
     testSelections = { ...testSelections, [reel.instanceId]: optionKey };
   };
 
@@ -156,7 +158,9 @@
                         <button
                           class={`reel-test-option ${
                             testSelections[reel.instanceId] === option.key
-                              ? "selected"
+                              ? testSelections[reel.instanceId] === parsed.answer
+                                ? "selected correct"
+                                : "selected incorrect"
                               : ""
                           }`}
                           type="button"
@@ -168,17 +172,24 @@
                       {/each}
                     </div>
                     {#if testSelections[reel.instanceId]}
+                      {@const isCorrect =
+                        testSelections[reel.instanceId] === parsed.answer}
                       <div
-                        class={`reel-test-feedback ${
-                          testSelections[reel.instanceId] === parsed.answer
-                            ? "correct"
-                            : "incorrect"
-                        }`}
+                        class={`reel-test-feedback ${isCorrect ? "correct" : "incorrect"}`}
                       >
-                        {testSelections[reel.instanceId] === parsed.answer
+                        {isCorrect
                           ? "Correct!"
-                          : `Correct answer: ${parsed.answer}`}
+                          : `Incorrect. Correct answer: ${parsed.answer}`}
                       </div>
+                      {#if !isCorrect}
+                        <button
+                          class="reel-test-next incorrect"
+                          type="button"
+                          onclick={() => scrollToIndex((index + 1) % reels.length)}
+                        >
+                          Next
+                        </button>
+                      {/if}
                     {/if}
                   </div>
                 {:else}
@@ -315,7 +326,8 @@
 
   .reel-content h2 {
     margin: 0;
-    font-size: 2rem;
+    font-size: 1.6rem;
+    line-height: 1.2;
   }
 
   .reel-content p {
@@ -436,8 +448,17 @@
   }
 
   .reel-test-option.selected {
-    border-color: var(--accent-indigo);
-    box-shadow: 0 10px 18px rgba(75, 95, 215, 0.18);
+    pointer-events: none;
+  }
+
+  .reel-test-option.selected.correct {
+    border-color: var(--accent-green);
+    box-shadow: 0 10px 18px rgba(46, 125, 111, 0.2);
+  }
+
+  .reel-test-option.selected.incorrect {
+    border-color: #b04040;
+    box-shadow: 0 10px 18px rgba(176, 64, 64, 0.2);
   }
 
   .reel-test-key {
@@ -465,8 +486,19 @@
   }
 
   .reel-test-feedback.incorrect {
-    background: rgba(75, 95, 215, 0.12);
-    color: var(--primary);
+    background: rgba(193, 61, 61, 0.12);
+    color: #7a2b2b;
+  }
+
+  .reel-test-next.incorrect {
+    background: #b04040;
+    box-shadow: 0 12px 24px rgba(176, 64, 64, 0.24);
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
   }
 
   :global(.reels-viewport::-webkit-scrollbar) {
