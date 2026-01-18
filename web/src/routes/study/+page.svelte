@@ -22,6 +22,8 @@
     level: typeof reel?.level === "number" ? reel.level : 0,
     meta: reel.createdAt ? new Date(reel.createdAt).toLocaleDateString() : "",
     courseId: reel.courseId ?? null,
+    courseCode: reel.courseCode ?? null,
+    courseName: reel.courseName ?? null,
     topicProgress:
       typeof reel?.topicProgress === "number" ? reel.topicProgress : 0,
     answeredOption: reel.answeredOption ?? null,
@@ -175,7 +177,17 @@
             <span class="reel-chip-text">{reel.chip}</span>
             <span class="reel-chip-progress">{reel.topicProgress}%</span>
           </div>
-          <h2>{reel.title}</h2>
+          {#if reel.courseCode || reel.courseName}
+            <div class="reel-course-header">
+              {#if reel.courseCode}
+                <span class="reel-course-code">{reel.courseCode}</span>
+              {/if}
+              {#if reel.courseName}
+                <span class="reel-course-name">{reel.courseName}</span>
+              {/if}
+            </div>
+          {/if}
+          <h2 class="reel-title">{reel.title}</h2>
           <div class="reel-tabs" role="tablist">
             <button
               class={`reel-tab ${getActiveTab(reel) === "theory" ? "active" : ""}`}
@@ -430,11 +442,35 @@
     flex-shrink: 0;
   }
 
-  .reel-content h2 {
-    margin: 0;
-    font-size: 1.6rem;
-    line-height: 1.2;
+  .reel-course-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .reel-course-code {
+    font-family: "Fraunces", "Times New Roman", serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
     color: var(--primary);
+    line-height: 1.2;
+    font-weight: 600;
+  }
+
+  .reel-course-name {
+    font-family: "Fraunces", "Times New Roman", serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: rgba(73, 40, 40, 0.75);
+    line-height: 1.2;
+  }
+
+  .reel-title {
+    margin: 0.5rem 0 0;
+    font-family: "Fraunces", "Times New Roman", serif;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    line-height: 1.3;
+    color: rgba(73, 40, 40, 0.6);
+    font-weight: 400;
+    font-style: italic;
   }
 
   .reel-content p {

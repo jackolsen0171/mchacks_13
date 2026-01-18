@@ -37,6 +37,8 @@ export async function load() {
         return {
             id: reel._id.toString(),
             courseId: courseId,
+            courseCode: course?.courseCode ?? null,
+            courseName: course?.courseName ?? null,
             fileId: reel.fileId?.toString(),
             title: reel.title ?? 'Untitled reel',
             topic: reel.topic ?? 'Study topic',
