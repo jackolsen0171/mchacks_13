@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { ObjectId } from 'mongodb';
 import { client } from '$lib/mongo_cert.js';
 
@@ -39,3 +39,23 @@ export async function load({ params }) {
     files: filesData
   };
 }
+
+/** @type {import('./$types').Actions} */
+export const actions = {
+  deleteCourse: async ({ params }) => {
+    await client.connect();
+    const database = client.db('brainrejuvenate');
+
+    let courseId;
+    try {
+      courseId = new ObjectId(params.id);
+    } catch {
+      throw error(404, 'Course not found');
+    }
+
+    await database.collection('files').deleteMany({ courseId });
+    await database.collection('courses').deleteOne({ _id: courseId });
+
+    throw redirect(303, '/');
+  }
+};

@@ -17,8 +17,25 @@
 <section class="course-shell">
   <header class="course-header">
     <a class="back-link" href="/">Back</a>
-    <h1>{data.course.courseCode} · {data.course.courseName}</h1>
-    <p class="subtitle">Topics and uploaded documents for this course.</p>
+    <div class="header-row">
+      <div>
+        <h1>{data.course.courseCode} · {data.course.courseName}</h1>
+        <p class="subtitle">Topics and uploaded documents for this course.</p>
+      </div>
+      <form method="POST" action="?/deleteCourse">
+        <button
+          class="delete-button"
+          type="submit"
+          on:click={(event) => {
+            if (!confirm("Delete this course and all its documents?")) {
+              event.preventDefault();
+            }
+          }}
+        >
+          Delete course
+        </button>
+      </form>
+    </div>
   </header>
 
   <div class="topics">
@@ -33,7 +50,11 @@
             {#each topic.documents as doc}
               <li>
                 <span class="doc-name">{doc.fileName}</span>
-                <span class="doc-meta">{doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : "Uploaded"}</span>
+                <span class="doc-meta"
+                  >{doc.createdAt
+                    ? new Date(doc.createdAt).toLocaleDateString()
+                    : "Uploaded"}</span
+                >
               </li>
             {/each}
           </ul>
@@ -73,6 +94,14 @@
     font-size: clamp(1.8rem, 3vw, 2.6rem);
   }
 
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
   .back-link {
     text-decoration: none;
     color: var(--accent-indigo);
@@ -82,6 +111,16 @@
   .subtitle {
     margin: 0.4rem 0 0;
     color: #52607a;
+  }
+
+  .delete-button {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: #a11c1c;
+    border-radius: 999px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   .topics {

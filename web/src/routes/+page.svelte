@@ -34,7 +34,7 @@
         <button
           class="primary-button"
           type="button"
-          on:click={() => (addCourseModalOpen = true)}
+          onclick={() => (addCourseModalOpen = true)}
         >
           + Add Course
         </button>
@@ -79,7 +79,7 @@
         <button
           class="secondary-button"
           type="button"
-          on:click={() => (addCourseModalOpen = false)}
+          onclick={() => (addCourseModalOpen = false)}
         >
           Cancel
         </button>
