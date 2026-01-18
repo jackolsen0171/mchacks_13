@@ -21,14 +21,6 @@
         the right course so your study sessions stay sharp.
       </p>
     </div>
-    <div class="hero-card">
-      <p class="hero-label">Tips</p>
-      <ul>
-        <li>PDF, DOCX, PPT, or images.</li>
-        <li>Keep files under 25 MB.</li>
-        <li>Upload by course for cleaner topics.</li>
-      </ul>
-    </div>
   </header>
 
   <div class="upload-grid">
@@ -106,20 +98,6 @@
         </button>
       </div>
     </form>
-
-    <div class="card upload-side">
-      <h2>What happens next?</h2>
-      <p>
-        We will scan each document for key topics and turn them into
-        review-ready study prompts.
-      </p>
-      <div class="accent-block">
-        <span class="accent-title">Stay consistent</span>
-        <span class="accent-body"
-          >Upload after every lecture to keep the tree thriving.</span
-        >
-      </div>
-    </div>
   </div>
 </section>
 
