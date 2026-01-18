@@ -29,46 +29,19 @@ export async function load({ params }) {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  addCourse: async ({ request }) => {
-    const data = await request.formData();
-    const courseCode = data.get('courseCode');
-    const courseName = data.get('courseName');
-
-    if (!courseCode || !courseName) {
-      return { success: false, error: 'Missing fields' };
-    }
-
-    try {
-      // Get database and collection
-      const database = client.db("brainrejuvenate");
-      const collection = database.collection("courses");
-
-      // Insert course 
-      const result = await collection.insertOne({
-        courseCode: courseCode,
-        courseName: courseName,
-        createdAt: new Date()
-      })
-
-      return {
-        success: true,
-        message: 'Course added successfully',
-        id: result.insertedId?.toString()
-      };
-
-    } catch (error) {
-      return {
-        success: false,
-        error: 'Failed to add course: ' + error.message
-      }
-    }
-  },
-
   addFile: async ({ request }) => {
+    // this action will 
+    // [1] Save file to chosen course 
+    // [2] Attach a topic to the file 
+    // [3] Generate reels for the file 
     const data = await request.formData();
     const courseId = data.get('courseId');
     const file = data.get('file');
     const fileName = file?.name;
+
+    const topics = database.collection("files").find({ courseId: courseId }).toArray();
+    const topicsList = topics.map(topic => topic.topic);
+    const topicsListString = topicsList.join(',');
 
     if (!courseId || !file) {
       return { success: false, error: 'Missing fields' };
@@ -94,6 +67,66 @@ export const actions = {
         fileData: Buffer.from(await file.arrayBuffer()),
         createdAt: new Date()
       };
+
+
+      // Call fumloop workflow
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_GUMLOOP_API_KEY}`,
+        },
+        body: JSON.stringify({
+          // Pass extracted text so the pipeline works on readable content.
+          syllabus_file: syllabusText
+          topics_list: topics
+        })
+      };
+
+      let data;
+
+      await fetch(
+        "https://api.gumloop.com/api/v1/start_pipeline?user_id=GcvRdFXs4KVlwHemZ1O2oty8kTV2&saved_item_id=ehhkbi9B71naRmrkr9Fpcw",
+        options,
+      )
+        .then((response) => response.json())
+        .then((response) => data = response)
+        .catch((err) => console.error(err));
+
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const url = `https://api.gumloop.com/api/v1/get_pl_run?run_id=${data.run_id}&user_id=${import.meta.env.VITE_GUMLOOP_USERID}`;
+      const headers = {
+        Authorization: `Bearer ${import.meta.env.VITE_GUMLOOP_API_KEY}`,
+      };
+
+      let result;
+      let isDone = false;
+      for (let attempt = 0; attempt < 12; attempt += 1) {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: headers,
+        });
+        result = await response.json();
+        isDone =
+          result?.state === 'DONE' ||
+          result?.status === 'completed' ||
+          result?.status === 'succeeded';
+        if (isDone) {
+          break;
+        }
+        await sleep(1000);
+      }
+
+      const topics = isDone
+        ? (result?.outputs?.key_topics ??
+          result?.output?.key_topics ??
+          result?.result?.key_topics ??
+          result?.data?.output?.key_topics ??
+          [])
+        : [];
+
+      // Output topics to console
+      console.log("Topics: ", topics);
 
       const result = await fileCollection.insertOne(fileDoc);
 

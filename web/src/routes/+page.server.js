@@ -46,17 +46,6 @@ export const actions = {
             const database = client.db("brainrejuvenate");
             const collection = database.collection("courses");
 
-            // Insert course
-            const syllabusData = Buffer.from(await courseSyllabus.arrayBuffer());
-            const add_course_result = await collection.insertOne({
-                courseCode: courseCode,
-                courseName: courseName,
-                courseSyllabus: syllabusData,
-                createdAt: new Date()
-            })
-
-            console.log("Course added successfully");
-
             // Begin extracting topics from the syllabus 
             console.log("Extracting topics from the syllabus...");
 
@@ -67,7 +56,6 @@ export const actions = {
             const syllabusText = (pdfData?.text ?? "").trim();
 
             // Extract topics from the file 
-
             const options = {
                 method: "POST",
                 headers: {
@@ -125,15 +113,13 @@ export const actions = {
             // Output topics to console
             console.log("Topics: ", topics);
 
-            // Save text to the database 
-            const fileCollection = database.collection("files");
-            const fileDoc = {
-                courseId: add_course_result.insertedId,
-                fileName: courseSyllabus?.name ?? 'syllabus',
-                fileData: syllabusText,
-                topics: topics
-            }
-            const add_topics_result = await fileCollection.insertOne(fileDoc);
+            // Save course to the database 
+            const add_course_result = await collection.insertOne({
+                courseCode: courseCode,
+                courseName: courseName,
+                topics: topics,
+                createdAt: new Date()
+            })
 
             return {
                 success: true,
