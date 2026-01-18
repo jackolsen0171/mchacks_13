@@ -20,11 +20,22 @@ export async function load({ params }) {
     throw error(404, 'Course not found');
   }
 
+  const filesCollection = database.collection('files');
+  const files = await filesCollection.find({ courseId }).toArray();
+
+  const filesData = files.map((file) => ({
+    id: file._id.toString(),
+    fileName: file.fileName ?? 'Untitled file',
+    createdAt: file.createdAt ? file.createdAt.toISOString() : null,
+    topic: file.topic ?? 'Unassigned'
+  }));
+
   return {
     course: {
       id: course._id.toString(),
       courseCode: course.courseCode,
       courseName: course.courseName
-    }
+    },
+    files: filesData
   };
 }
