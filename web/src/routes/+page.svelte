@@ -150,30 +150,17 @@
             {@const isLeft = index % 2 === 0}
             {@const branchBottom = Math.round(((index + 1) / (courseCount + 1)) * 100)}
             <div
-              class="tree-branch"
-              style={`bottom: ${branchBottom}%; ${
-                isLeft
-                  ? `left: calc(-1 * (var(--branch-length) - 4px)); transform: rotate(-8deg); transform-origin: right center;`
-                  : `left: 29px; transform: rotate(8deg); transform-origin: left center;`
-              } animation-delay: ${index * 0.2}s;`}
-            ></div>
-            <div
-              class="tree-leaf"
-              style={`bottom: ${branchBottom}%; ${
-                isLeft
-                  ? `left: calc(50% - (var(--branch-length) + var(--leaf-offset))); transform: translateY(220%);`
-                  : `left: calc(50% + (var(--branch-length) + var(--leaf-offset))); transform: translateY(220%);`
-              } animation-delay: ${index * 0.2}s;`}
+              class="branch-group"
+              class:left={isLeft}
+              class:right={!isLeft}
+              style={`bottom: ${branchBottom}%; animation-delay: ${index * 0.15}s;`}
             >
-              <a
-                class="leaf-pill"
-                style={`${!isLeft ? "position: relative; top: 60px; right: 110px;" : "position: relative; top: 60px; right: 60px;"}`}
-                href={`/class/${course.id}`}
-              >
+              <div class="tree-branch"></div>
+              <a class="leaf-label" href={`/class/${course.id}`}>
                 <span class="leaf-dot"></span>
                 <span class="leaf-text">
                   <span class="leaf-code">{course.courseCode}</span>
-                  <span class="leaf-muted">{course.courseName}</span>
+                  <span class="leaf-name">{course.courseName}</span>
                 </span>
               </a>
             </div>
@@ -552,70 +539,117 @@
     z-index: 5;
   }
 
-  .tree-branch {
+  /* Branch and Label System */
+  .branch-group {
     position: absolute;
-    height: 10px;
-    background: #8b5b30;
-    border-radius: 999px;
-    animation: branchIn 0.6s ease both;
-    width: var(--branch-length);
-  }
-
-  .tree-leaf {
-    position: absolute;
-    animation: leafIn 0.7s ease both;
-    z-index: 8;
-  }
-
-  .leaf-pill {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
+    animation: branchFadeIn 0.5s ease both;
+  }
+
+  .branch-group.left {
+    right: 50%;
+    flex-direction: row-reverse;
+    padding-right: 16px;
+  }
+
+  .branch-group.right {
+    left: 50%;
+    flex-direction: row;
+    padding-left: 16px;
+  }
+
+  .tree-branch {
+    width: var(--branch-length);
+    height: 10px;
+    background: linear-gradient(90deg, #7a4f2c, #8b5b30);
     border-radius: 999px;
-    /* background: var(--surface);
-    border: 1px solid var(--border); */
+    flex-shrink: 0;
+  }
+
+  .branch-group.left .tree-branch {
+    background: linear-gradient(90deg, #8b5b30, #7a4f2c);
+    transform: rotate(-6deg);
+  }
+
+  .branch-group.right .tree-branch {
+    transform: rotate(6deg);
+  }
+
+  .leaf-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(73, 40, 40, 0.1);
     text-decoration: none;
     color: var(--primary);
-    font-weight: 600;
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-    /* box-shadow: 0 14px 24px rgba(31, 42, 68, 0.12); */
     white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(73, 40, 40, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .leaf-pill:visited,
-  .leaf-pill:active {
-    color: var(--primary);
+  .leaf-label:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(73, 40, 40, 0.12);
+  }
+
+  .leaf-label:active {
+    transform: scale(0.98);
+  }
+
+  .branch-group.left .leaf-label {
+    margin-right: 0.5rem;
+  }
+
+  .branch-group.right .leaf-label {
+    margin-left: 0.5rem;
+  }
+
+  .leaf-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    flex-shrink: 0;
   }
 
   .leaf-text {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
-    line-height: 1.1;
+    line-height: 1.2;
+    gap: 1px;
   }
 
   .leaf-code {
     font-weight: 700;
+    font-size: 0.9rem;
   }
 
-  .leaf-dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background: #84934a;
-    display: inline-block;
-  }
-
-  .leaf-pill:active .leaf-dot,
-  .leaf-pill:focus .leaf-dot,
-  .leaf-pill:focus-visible .leaf-dot {
-    background: #84934a;
-  }
-
-  .leaf-muted {
+  .leaf-name {
     font-weight: 500;
-    color: rgba(73, 40, 40, 0.7);
+    font-size: 0.75rem;
+    color: rgba(73, 40, 40, 0.65);
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @keyframes branchFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .brain-pot {
@@ -890,41 +924,45 @@
     color: rgba(73, 40, 40, 0.7);
   }
 
-  @keyframes leafIn {
-    0% {
-      opacity: 0;
-      transform: translateY(10px) scale(0.8);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  @keyframes branchIn {
-    0% {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-    100% {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-  }
-
   @media (max-width: 720px) {
     .tree-card {
-      padding: 2rem 1.2rem;
+      padding: 2rem 1rem;
     }
 
     .tree-stage {
       height: 22rem;
-      --branch-length: 70px;
-      --leaf-offset: 30px;
+      --branch-length: 60px;
     }
 
     .tree-branch {
       height: 8px;
+    }
+
+    .leaf-label {
+      padding: 0.4rem 0.7rem;
+      gap: 0.4rem;
+    }
+
+    .leaf-code {
+      font-size: 0.8rem;
+    }
+
+    .leaf-name {
+      font-size: 0.7rem;
+      max-width: 90px;
+    }
+
+    .leaf-dot {
+      width: 6px;
+      height: 6px;
+    }
+
+    .branch-group.left .leaf-label {
+      margin-right: 0.3rem;
+    }
+
+    .branch-group.right .leaf-label {
+      margin-left: 0.3rem;
     }
   }
 </style>
