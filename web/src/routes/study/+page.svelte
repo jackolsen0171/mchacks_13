@@ -155,6 +155,11 @@
     display: grid;
     font-family: "Fraunces", "Times New Roman", serif;
     min-height: 100dvh;
+    background: linear-gradient(
+      180deg,
+      rgba(31, 42, 68, 0.06),
+      rgba(248, 249, 251, 0.92)
+    );
   }
 
   .reels-viewport {
@@ -164,6 +169,7 @@
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     padding: 0;
+    scrollbar-color: rgba(31, 42, 68, 0.25) transparent;
   }
 
   .reel-card {
@@ -177,12 +183,12 @@
     overflow: hidden;
     background: linear-gradient(
       160deg,
-      rgba(75, 95, 215, 0.08),
-      rgba(46, 125, 111, 0.16) 55%,
+      rgba(75, 95, 215, 0.06),
+      rgba(46, 125, 111, 0.12) 55%,
       #ffffff 100%
     );
     border: 1px solid var(--border);
-    box-shadow: 0 18px 36px rgba(31, 42, 68, 0.08);
+    box-shadow: 0 18px 40px rgba(31, 42, 68, 0.08);
   }
 
   .reel-card::after {
@@ -191,12 +197,12 @@
     inset: 0;
     background: radial-gradient(
         circle at top left,
-        rgba(46, 125, 111, 0.2),
+        rgba(46, 125, 111, 0.16),
         transparent 55%
       ),
       radial-gradient(
         circle at bottom right,
-        rgba(75, 95, 215, 0.2),
+        rgba(75, 95, 215, 0.18),
         transparent 55%
       );
     opacity: 0.9;
@@ -264,12 +270,13 @@
   .reel-block {
     padding: 1.1rem 1.2rem;
     border-radius: 18px;
-    background: rgba(51, 45, 45, 0.8);
-    border: 1px solid rgba(31, 42, 68, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(31, 42, 68, 0.1);
     box-shadow: 0 12px 24px rgba(31, 42, 68, 0.08);
     display: grid;
     gap: 0.6rem;
     min-height: 12rem;
+    color: var(--primary);
   }
 
   .reel-block header {
@@ -293,8 +300,8 @@
     gap: 0.5rem;
     padding: 0.35rem;
     border-radius: 999px;
-    background: rgba(31, 42, 68, 0.08);
-    border: 1px solid rgba(31, 42, 68, 0.12);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--border);
     width: fit-content;
   }
 
@@ -306,7 +313,7 @@
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.02em;
-    color: #52607a;
+    color: rgba(31, 42, 68, 0.6);
     cursor: pointer;
   }
 
@@ -336,8 +343,37 @@
     cursor: pointer;
   }
 
+  :global(.reels-viewport::-webkit-scrollbar) {
+    width: 10px;
+  }
+
+  :global(.reels-viewport::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+
+  :global(.reels-viewport::-webkit-scrollbar-thumb) {
+    background: rgba(31, 42, 68, 0.2);
+    border-radius: 999px;
+  }
+
+  :global(.reels-viewport::-webkit-scrollbar-thumb:hover) {
+    background: rgba(31, 42, 68, 0.32);
+  }
+
   .reel-markdown :global(p) {
     margin: 0 0 0.8rem;
+    color: var(--primary);
+  }
+
+  .reel-markdown {
+    color: var(--primary);
+  }
+
+  .reel-markdown :global(h1),
+  .reel-markdown :global(h2),
+  .reel-markdown :global(h3),
+  .reel-markdown :global(h4) {
+    color: var(--primary);
   }
 
   .reel-markdown :global(p:last-child) {
@@ -348,10 +384,12 @@
   .reel-markdown :global(ol) {
     margin: 0.4rem 0 0.8rem 1.2rem;
     padding: 0;
+    color: var(--primary);
   }
 
   .reel-markdown :global(li) {
     margin-bottom: 0.35rem;
+    color: var(--primary);
   }
 
   .reel-markdown :global(code) {
