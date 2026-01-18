@@ -14,7 +14,7 @@
 </script>
 
 <svelte:head>
-  <title>Adaptive Study</title>
+  <title>Bloom Scroll</title>
 </svelte:head>
 
 <div class="app-shell">
