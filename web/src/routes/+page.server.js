@@ -60,14 +60,11 @@ export const actions = {
             // Begin extracting topics from the syllabus 
             console.log("Extracting topics from the syllabus...");
 
-
-
             // Extract text from pdf 
-            const arrayBuffer = await syllabus.arrayBuffer();
+            const arrayBuffer = await courseSyllabus.arrayBuffer();
             const parser = new PDFParse({ data: new Uint8Array(arrayBuffer) });
             const pdfData = await parser.getText();
             const syllabusText = (pdfData?.text ?? "").trim();
-
 
             // Extract topics from the file 
 
@@ -118,22 +115,21 @@ export const actions = {
             }
 
             const topics = isDone
-                ? (result?.outputs?.output ??
-                    result?.output ??
-                    result?.result ??
-                    result?.data?.output ??
-                    JSON.stringify(result, null, 2))
-                : null;
+                ? (result?.outputs?.key_topics ??
+                    result?.output?.key_topics ??
+                    result?.result?.key_topics ??
+                    result?.data?.output?.key_topics ??
+                    [])
+                : [];
 
-
-            // Output topics to console 
+            // Output topics to console
             console.log("Topics: ", topics);
 
             // Save text to the database 
             const fileCollection = database.collection("files");
             const fileDoc = {
-                courseId: courseId,
-                fileName: fileName,
+                courseId: add_course_result.insertedId,
+                fileName: courseSyllabus?.name ?? 'syllabus',
                 fileData: syllabusText,
                 topics: topics
             }
