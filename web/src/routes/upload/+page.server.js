@@ -162,7 +162,6 @@ export const actions = {
             courseId: courseDoc._id,
             fileId: file_result.insertedId,
             title: titles[i],
-            content: content_file_text,
             topic: topics[i],
             theory_reel: theory_reels[i],
             test_reel: test_reels[i],
