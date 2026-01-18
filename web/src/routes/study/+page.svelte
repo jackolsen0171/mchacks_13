@@ -13,6 +13,7 @@
 
   let reels = (data?.reels ?? []).map((reel, index) => ({
     id: reel.id,
+    instanceId: `reel-${index}`,
     theme: themes[index % themes.length],
     chip: reel.topic ?? "Study topic",
     title: reel.title ?? "Untitled reel",
@@ -22,12 +23,14 @@
     meta: reel.createdAt ? new Date(reel.createdAt).toLocaleDateString() : "",
   }));
 
+  let nextInstanceId = reels.length;
+
   const getActiveTab = (reel) =>
-    activeTabs[reel.id] ?? (reel.level >= 1 ? "test" : "theory");
+    activeTabs[reel.instanceId] ?? (reel.level >= 1 ? "test" : "theory");
 
   const setActiveTab = (reel, tab) => {
     if (tab === "test" && reel.level < 1) return;
-    activeTabs = { ...activeTabs, [reel.id]: tab };
+    activeTabs = { ...activeTabs, [reel.instanceId]: tab };
   };
 
   const scrollToIndex = async (index) => {
@@ -39,18 +42,7 @@
     }
   };
 
-  const handleScroll = () => {
-    if (!viewport || reels.length === 0) return;
-    const maxScroll = viewport.scrollHeight - viewport.clientHeight;
-    if (maxScroll <= 0) return;
-    if (viewport.scrollTop >= maxScroll - 2) {
-      viewport.scrollTop = 0;
-    } else if (viewport.scrollTop <= 0) {
-      viewport.scrollTop = maxScroll;
-    }
-  };
-
-  const markSeen = async (reelId, index) => {
+  const markSeen = async (reelId, index, reel) => {
     const formData = new FormData();
     formData.set("reelId", reelId);
     const response = await fetch("?/markSeen", {
@@ -58,10 +50,17 @@
       body: formData,
     });
     if (response.ok) {
-      reels = reels.map((reel, i) =>
-        i === index ? { ...reel, level: reel.level + 1 } : reel,
+      const nextLevel = reel.level + 1;
+      reels = reels.map((item, i) =>
+        i === index ? { ...item, level: nextLevel } : item,
       );
-      const { [reelId]: _removed, ...rest } = activeTabs;
+      const appendedReel = {
+        ...reel,
+        level: nextLevel,
+        instanceId: `reel-${nextInstanceId++}`,
+      };
+      reels = [...reels, appendedReel];
+      const { [reel.instanceId]: _removed, ...rest } = activeTabs;
       activeTabs = rest;
       const nextIndex = (index + 1) % reels.length;
       await scrollToIndex(nextIndex);
@@ -74,9 +73,8 @@
     class="reels-viewport"
     aria-label="Study topic reels"
     bind:this={viewport}
-    on:scroll={handleScroll}
   >
-    {#each reels as reel, index (reel.id)}
+    {#each reels as reel, index (reel.instanceId)}
       <article class={`reel-card reel-card--${reel.theme}`}>
         <div class="reel-rail"></div>
         <div class="reel-content">
@@ -88,7 +86,7 @@
               type="button"
               role="tab"
               aria-selected={getActiveTab(reel) === "theory"}
-              on:click={() => setActiveTab(reel, "theory")}
+              onclick={() => setActiveTab(reel, "theory")}
             >
               Theory
             </button>
@@ -98,7 +96,7 @@
               role="tab"
               aria-selected={getActiveTab(reel) === "test"}
               disabled={reel.level < 1}
-              on:click={() => setActiveTab(reel, "test")}
+              onclick={() => setActiveTab(reel, "test")}
             >
               Test
             </button>
@@ -115,7 +113,7 @@
                 <button
                   class="reel-seen"
                   type="button"
-                  on:click={() => markSeen(reel.id, index)}
+                  onclick={() => markSeen(reel.id, index, reel)}
                 >
                   Seen
                 </button>
