@@ -86,12 +86,12 @@
 
 <style>
   :global(:root) {
-    --primary: #1f2a44;
-    --background: #f8f9fb;
-    --surface: #ffffff;
-    --border: #e4e7ec;
-    --accent-green: #2e7d6f;
-    --accent-indigo: #4b5fd7;
+    --primary: #492828;
+    --background: #efe9e3;
+    --surface: #efe9e3;
+    --border: #492828;
+    --accent-green: #84934a;
+    --accent-indigo: #656d3f;
   }
 
   :global(html) {
@@ -103,11 +103,13 @@
     color: var(--primary);
     display: grid;
     gap: 2rem;
+    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
   }
 
   .course-header h1 {
     margin: 0.5rem 0 0;
     font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-family: "Fraunces", "Times New Roman", serif;
   }
 
   .header-row {
@@ -120,23 +122,40 @@
 
   .back-link {
     text-decoration: none;
-    color: var(--accent-indigo);
+    color: var(--accent-green);
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .back-link::before {
+    content: "←";
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
   }
 
   .subtitle {
     margin: 0.4rem 0 0;
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.7);
   }
 
   .delete-button {
-    border: 1px solid var(--border);
-    background: #fff;
+    border: 1px solid rgba(161, 28, 28, 0.3);
+    background: rgba(161, 28, 28, 0.08);
     color: #a11c1c;
     border-radius: 999px;
     padding: 0.6rem 1.2rem;
     font-weight: 600;
     cursor: pointer;
+    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+    transition: background 0.2s ease;
+  }
+
+  .delete-button:hover {
+    background: rgba(161, 28, 28, 0.15);
   }
 
   .topics {
@@ -145,11 +164,11 @@
   }
 
   .topic-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(73, 40, 40, 0.15);
     border-radius: 1.5rem;
     padding: 1.5rem;
-    box-shadow: 0 14px 28px rgba(31, 42, 68, 0.08);
+    box-shadow: 0 14px 28px rgba(73, 40, 40, 0.06);
   }
 
   .topic-title {
@@ -162,10 +181,11 @@
   .topic-title h2 {
     margin: 0;
     font-size: 1.2rem;
+    font-family: "Fraunces", "Times New Roman", serif;
   }
 
   .topic-title span {
-    color: #68748a;
+    color: rgba(73, 40, 40, 0.6);
     font-size: 0.85rem;
   }
 
@@ -183,7 +203,7 @@
     gap: 1rem;
     padding: 0.75rem 1rem;
     border-radius: 0.9rem;
-    background: #f3f5f9;
+    background: rgba(73, 40, 40, 0.05);
     align-items: flex-start;
   }
 
@@ -196,7 +216,7 @@
   }
 
   .doc-meta {
-    color: #68748a;
+    color: rgba(73, 40, 40, 0.6);
     font-size: 0.85rem;
     white-space: nowrap;
   }
@@ -204,9 +224,9 @@
   .empty-state {
     padding: 2rem;
     border-radius: 1.5rem;
-    border: 1px dashed var(--border);
+    border: 1px dashed rgba(73, 40, 40, 0.25);
     text-align: center;
-    color: #68748a;
+    color: rgba(73, 40, 40, 0.6);
   }
 
   .topic-pill-list {
@@ -219,14 +239,14 @@
   .topic-pill {
     padding: 0.45rem 0.85rem;
     border-radius: 999px;
-    background: #eef1f6;
-    color: #1f2a44;
+    background: var(--accent-green);
+    color: #efe9e3;
     font-size: 0.9rem;
     font-weight: 600;
   }
 
   .empty-topic {
     margin: 1rem 0 0;
-    color: #68748a;
+    color: rgba(73, 40, 40, 0.6);
   }
 </style>
