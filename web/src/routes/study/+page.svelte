@@ -1,177 +1,136 @@
 <script>
-  const reels = [
-    {
-      id: 1,
-      theme: "lumen",
-      chip: "Integration Techniques",
-      title: "Partial Fractions in Motion",
-      body: "Break rational functions into sums before integrating. Focus on the setup and the coefficient matching pattern.",
-      meta: "3 checkpoints · 8 min · Lecture 5",
-    },
-    {
-      id: 2,
-      theme: "tide",
-      chip: "Series + Sequences",
-      title: "Convergence Tests, Fast",
-      body: "Decide between ratio, root, and comparison tests. Follow the decision map to identify convergence in under a minute.",
-      meta: "4 checkpoints · 11 min · Problem set 7",
-    },
-    {
-      id: 3,
-      theme: "ember",
-      chip: "Applications",
-      title: "Arc Length and Surface Area",
-      body: "Visualize the curve first, then map the formula. Keep the square root term clean and check the bounds twice.",
-      meta: "2 checkpoints · 6 min · Lab 3",
-    },
-    {
-      id: 4,
-      theme: "lumen",
-      chip: "Linear Algebra",
-      title: "Eigenvectors in 5 Steps",
-      body: "Identify the eigenvalues, solve the null space, and normalize the basis so the matrix stays tidy.",
-      meta: "5 checkpoints · 9 min · Homework 2",
-    },
-    {
-      id: 5,
-      theme: "tide",
-      chip: "Statistics",
-      title: "Confidence Intervals Made Simple",
-      body: "Pick the right distribution, compute the margin of error, and interpret the interval in plain language.",
-      meta: "3 checkpoints · 7 min · Quiz prep",
-    },
-    {
-      id: 6,
-      theme: "ember",
-      chip: "Physics",
-      title: "Momentum and Impulse",
-      body: "Sketch the collision, track the impulse, and line up the before/after momentum terms.",
-      meta: "4 checkpoints · 10 min · Lab recap",
-    },
-    {
-      id: 7,
-      theme: "lumen",
-      chip: "Chemistry",
-      title: "Balancing Redox Reactions",
-      body: "Split oxidation and reduction, balance charge with electrons, then balance atoms with water.",
-      meta: "5 checkpoints · 12 min · Unit 4",
-    },
-    {
-      id: 8,
-      theme: "tide",
-      chip: "Computer Science",
-      title: "Big-O by Patterns",
-      body: "Scan the loops, collapse the nested parts, and choose the tightest upper bound.",
-      meta: "3 checkpoints · 6 min · Lecture 9",
-    },
-    {
-      id: 9,
-      theme: "ember",
-      chip: "Economics",
-      title: "Elasticity on Demand",
-      body: "Use the midpoint method, compare absolute values, and interpret what the curve suggests.",
-      meta: "4 checkpoints · 8 min · Problem set 5",
-    },
-    {
-      id: 10,
-      theme: "lumen",
-      chip: "Biology",
-      title: "Cell Signaling Cascades",
-      body: "Track the receptors, note the secondary messengers, and connect each signal to its response.",
-      meta: "5 checkpoints · 9 min · Chapter 12",
-    },
-    {
-      id: 11,
-      theme: "tide",
-      chip: "Data Structures",
-      title: "Binary Trees in Practice",
-      body: "Traverse preorder, inorder, and postorder, then compare what each ordering reveals.",
-      meta: "4 checkpoints · 10 min · Lab 6",
-    },
-    {
-      id: 12,
-      theme: "ember",
-      chip: "Psychology",
-      title: "Memory Systems Breakdown",
-      body: "Contrast working memory, short-term storage, and consolidation with everyday examples.",
-      meta: "3 checkpoints · 7 min · Reading 3",
-    },
-    {
-      id: 13,
-      theme: "lumen",
-      chip: "History",
-      title: "Causes of the Great Depression",
-      body: "Layer the market crash with policy shifts, global trade, and consumer confidence.",
-      meta: "4 checkpoints · 8 min · Lecture 11",
-    },
-    {
-      id: 14,
-      theme: "tide",
-      chip: "Philosophy",
-      title: "Ethical Frameworks at a Glance",
-      body: "Compare duty-based reasoning, utilitarian outcomes, and virtue-based perspectives.",
-      meta: "3 checkpoints · 6 min · Seminar 2",
-    },
-    {
-      id: 15,
-      theme: "ember",
-      chip: "Literature",
-      title: "Close Reading Strategy",
-      body: "Anchor on diction, track the imagery, and link the passage to the larger theme.",
-      meta: "2 checkpoints · 5 min · Workshop",
-    },
-    {
-      id: 16,
-      theme: "lumen",
-      chip: "Engineering",
-      title: "Statics Free-Body Diagram",
-      body: "Isolate the forces, label the axes, and keep moments consistent with the sign convention.",
-      meta: "4 checkpoints · 9 min · Studio 3",
-    },
-    {
-      id: 17,
-      theme: "tide",
-      chip: "Sociology",
-      title: "Social Stratification Essentials",
-      body: "Define class, status, and power, then trace how each affects life outcomes.",
-      meta: "3 checkpoints · 7 min · Lecture 6",
-    },
-    {
-      id: 18,
-      theme: "ember",
-      chip: "Art History",
-      title: "Renaissance Composition",
-      body: "Spot the balance, track the perspective lines, and connect the symbols to the patron.",
-      meta: "3 checkpoints · 6 min · Gallery notes",
-    },
-    {
-      id: 19,
-      theme: "lumen",
-      chip: "International Law",
-      title: "Treaty Interpretation Basics",
-      body: "Read the text, apply context, and confirm with subsequent practice.",
-      meta: "4 checkpoints · 8 min · Case brief",
-    },
-    {
-      id: 20,
-      theme: "tide",
-      chip: "Marketing",
-      title: "Positioning in One Page",
-      body: "Clarify the audience, define the category, and anchor on the differentiator.",
-      meta: "3 checkpoints · 5 min · Workshop 1",
-    },
-  ];
+  import { marked } from "marked";
+  import { tick } from "svelte";
+
+  export let data;
+
+  const themes = ["lumen", "tide", "ember"];
+
+  const renderMarkdown = (value) => marked.parse(value ?? "");
+
+  let activeTabs = {};
+  let viewport;
+
+  let reels = (data?.reels ?? []).map((reel, index) => ({
+    id: reel.id,
+    theme: themes[index % themes.length],
+    chip: reel.topic ?? "Study topic",
+    title: reel.title ?? "Untitled reel",
+    theory: reel?.theory_reel ?? "",
+    test: reel?.test_reel ?? "",
+    level: typeof reel?.level === "number" ? reel.level : 0,
+    meta: reel.createdAt ? new Date(reel.createdAt).toLocaleDateString() : "",
+  }));
+
+  const getActiveTab = (reel) =>
+    activeTabs[reel.id] ?? (reel.level >= 1 ? "test" : "theory");
+
+  const setActiveTab = (reel, tab) => {
+    if (tab === "test" && reel.level < 1) return;
+    activeTabs = { ...activeTabs, [reel.id]: tab };
+  };
+
+  const scrollToIndex = async (index) => {
+    await tick();
+    const cards = viewport?.querySelectorAll(".reel-card");
+    const target = cards?.[index];
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleScroll = () => {
+    if (!viewport || reels.length === 0) return;
+    const maxScroll = viewport.scrollHeight - viewport.clientHeight;
+    if (maxScroll <= 0) return;
+    if (viewport.scrollTop >= maxScroll - 2) {
+      viewport.scrollTop = 0;
+    } else if (viewport.scrollTop <= 0) {
+      viewport.scrollTop = maxScroll;
+    }
+  };
+
+  const markSeen = async (reelId, index) => {
+    const formData = new FormData();
+    formData.set("reelId", reelId);
+    const response = await fetch("?/markSeen", {
+      method: "POST",
+      body: formData,
+    });
+    if (response.ok) {
+      reels = reels.map((reel, i) =>
+        i === index ? { ...reel, level: reel.level + 1 } : reel,
+      );
+      const { [reelId]: _removed, ...rest } = activeTabs;
+      activeTabs = rest;
+      const nextIndex = (index + 1) % reels.length;
+      await scrollToIndex(nextIndex);
+    }
+  };
 </script>
 
 <section class="reels-shell">
-  <div class="reels-viewport" aria-label="Study topic reels">
+  <div
+    class="reels-viewport"
+    aria-label="Study topic reels"
+    bind:this={viewport}
+    on:scroll={handleScroll}
+  >
     {#each reels as reel, index (reel.id)}
       <article class={`reel-card reel-card--${reel.theme}`}>
         <div class="reel-rail"></div>
         <div class="reel-content">
           <span class="reel-chip">{reel.chip}</span>
           <h2>{reel.title}</h2>
-          <p>{reel.body}</p>
+          <div class="reel-tabs" role="tablist">
+            <button
+              class={`reel-tab ${getActiveTab(reel) === "theory" ? "active" : ""}`}
+              type="button"
+              role="tab"
+              aria-selected={getActiveTab(reel) === "theory"}
+              on:click={() => setActiveTab(reel, "theory")}
+            >
+              Theory
+            </button>
+            <button
+              class={`reel-tab ${getActiveTab(reel) === "test" ? "active" : ""}`}
+              type="button"
+              role="tab"
+              aria-selected={getActiveTab(reel) === "test"}
+              disabled={reel.level < 1}
+              on:click={() => setActiveTab(reel, "test")}
+            >
+              Test
+            </button>
+          </div>
+          <div class="reel-blocks">
+            {#if getActiveTab(reel) === "theory"}
+              <section class="reel-block">
+                <header>Theory</header>
+                <div class="reel-markdown">
+                  {@html renderMarkdown(
+                    reel.theory || "No theory reel available yet.",
+                  )}
+                </div>
+                <button
+                  class="reel-seen"
+                  type="button"
+                  on:click={() => markSeen(reel.id, index)}
+                >
+                  Seen
+                </button>
+              </section>
+            {:else}
+              <section class="reel-block">
+                <header>Test</header>
+                <div class="reel-markdown">
+                  {@html renderMarkdown(
+                    reel.test || "No test reel available yet.",
+                  )}
+                </div>
+              </section>
+            {/if}
+          </div>
         </div>
       </article>
     {/each}
@@ -296,6 +255,133 @@
     margin: 0;
     color: #52607a;
     max-width: 36rem;
+  }
+
+  .reel-blocks {
+    display: grid;
+    gap: 1.2rem;
+    margin-top: 0.4rem;
+  }
+
+  .reel-block {
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+    background: rgba(51, 45, 45, 0.8);
+    border: 1px solid rgba(31, 42, 68, 0.12);
+    box-shadow: 0 12px 24px rgba(31, 42, 68, 0.08);
+    display: grid;
+    gap: 0.6rem;
+    min-height: 12rem;
+  }
+
+  .reel-block header {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-indigo);
+  }
+
+  .reel-block:nth-child(2) header {
+    color: var(--accent-green);
+  }
+
+  .reel-block p {
+    max-width: 42rem;
+  }
+
+  .reel-tabs {
+    display: inline-flex;
+    gap: 0.5rem;
+    padding: 0.35rem;
+    border-radius: 999px;
+    background: rgba(31, 42, 68, 0.08);
+    border: 1px solid rgba(31, 42, 68, 0.12);
+    width: fit-content;
+  }
+
+  .reel-tab {
+    border: none;
+    background: transparent;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #52607a;
+    cursor: pointer;
+  }
+
+  .reel-tab:disabled {
+    color: rgba(82, 96, 122, 0.4);
+    cursor: not-allowed;
+  }
+
+  .reel-tab.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: 0 8px 16px rgba(31, 42, 68, 0.12);
+  }
+
+  .reel-action {
+    margin-top: 0.8rem;
+  }
+
+  .reel-seen {
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 1.4rem;
+    font-weight: 700;
+    background: var(--accent-indigo);
+    color: #fff;
+    box-shadow: 0 12px 24px rgba(75, 95, 215, 0.3);
+    cursor: pointer;
+  }
+
+  .reel-markdown :global(p) {
+    margin: 0 0 0.8rem;
+  }
+
+  .reel-markdown :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .reel-markdown :global(ul),
+  .reel-markdown :global(ol) {
+    margin: 0.4rem 0 0.8rem 1.2rem;
+    padding: 0;
+  }
+
+  .reel-markdown :global(li) {
+    margin-bottom: 0.35rem;
+  }
+
+  .reel-markdown :global(code) {
+    font-family: "SFMono-Regular", "Menlo", "Monaco", monospace;
+    font-size: 0.85em;
+    background: rgba(31, 42, 68, 0.08);
+    padding: 0.1rem 0.35rem;
+    border-radius: 6px;
+  }
+
+  .reel-markdown :global(pre) {
+    margin: 0.6rem 0 0.8rem;
+    padding: 0.8rem;
+    border-radius: 12px;
+    background: rgba(31, 42, 68, 0.08);
+    overflow-x: auto;
+  }
+
+  .reel-markdown :global(pre code) {
+    background: transparent;
+    padding: 0;
+  }
+
+  .reel-markdown :global(blockquote) {
+    margin: 0.6rem 0 0.8rem;
+    padding: 0.3rem 0 0.3rem 0.8rem;
+    border-left: 3px solid rgba(75, 95, 215, 0.5);
+    color: #656f82;
   }
 
   .reel-footer {

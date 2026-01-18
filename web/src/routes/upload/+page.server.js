@@ -149,7 +149,6 @@ export const actions = {
         }
 
         const reels = isDone ? result : [];
-
         const titles = reels.outputs.title;
         const topics = reels.outputs.topic;
         const theory_reels = reels.outputs.theory_reel;
@@ -160,12 +159,15 @@ export const actions = {
         for (let i = 0; i < topics.length; i++) {
           let reelDoc = {
             courseId: courseDoc._id,
+            courseName: courseDoc.courseName,
             fileId: file_result.insertedId,
             title: titles[i],
-            content: content_file_text,
             topic: topics[i],
             theory_reel: theory_reels[i],
             test_reel: test_reels[i],
+            // 0 is the theory 
+            // 1 is the test 
+            level: 0,
             createdAt: new Date()
           }
           const reels_result = await reelsCollection.insertOne(reelDoc);
