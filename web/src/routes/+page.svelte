@@ -284,12 +284,20 @@
     font-weight: 600;
     border: 1px solid transparent;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .primary-button {
-    background: var(--accent-green);
+    background: #84934a;
     color: #efe9e3;
     box-shadow: 0 12px 24px rgba(132, 147, 74, 0.25);
+  }
+
+  .primary-button:active,
+  .primary-button:focus,
+  .primary-button:focus-visible {
+    background: #84934a;
+    color: #efe9e3;
   }
 
   .secondary-button {
@@ -404,6 +412,12 @@
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
     /* box-shadow: 0 14px 24px rgba(31, 42, 68, 0.12); */
     white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .leaf-pill:visited,
+  .leaf-pill:active {
+    color: var(--primary);
   }
 
   .leaf-text {
@@ -420,8 +434,14 @@
     width: 0.6rem;
     height: 0.6rem;
     border-radius: 50%;
-    background: var(--accent-indigo);
+    background: #84934a;
     display: inline-block;
+  }
+
+  .leaf-pill:active .leaf-dot,
+  .leaf-pill:focus .leaf-dot,
+  .leaf-pill:focus-visible .leaf-dot {
+    background: #84934a;
   }
 
   .leaf-muted {

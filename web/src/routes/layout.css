@@ -40,6 +40,20 @@ button {
   font: inherit;
 }
 
+button:active,
+button:focus,
+button:focus-visible {
+  color: inherit;
+  background: inherit;
+  border-color: inherit;
+}
+
+a:active,
+a:focus,
+a:focus-visible {
+  color: inherit;
+}
+
 button,
 a,
 input,

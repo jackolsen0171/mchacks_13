@@ -10,6 +10,7 @@
 
   let activeTabs = {};
   let viewport;
+  let testSelections = {};
 
   let reels = (data?.reels ?? []).map((reel, index) => ({
     id: reel.id,
@@ -31,6 +32,29 @@
   const setActiveTab = (reel, tab) => {
     if (tab === "test" && reel.level < 1) return;
     activeTabs = { ...activeTabs, [reel.instanceId]: tab };
+  };
+
+  const parseTest = (text) => {
+    if (!text) return null;
+    const cleaned = text.replace(/\r/g, "");
+    const questionMatch = cleaned.match(/question:\s*(.*)/i);
+    const question = questionMatch?.[1]?.trim() ?? null;
+    const options = [];
+    const optionRegex = /(^|\n)\s*([A-D])[\)\.]\s*(.+)/g;
+    let match;
+    while ((match = optionRegex.exec(cleaned)) !== null) {
+      options.push({ key: match[2], text: match[3].trim() });
+    }
+    const answerMatch = cleaned.match(/correct answer:\s*([A-D])/i);
+    const answer = answerMatch?.[1]?.toUpperCase() ?? null;
+    if (!question || options.length === 0 || !answer) {
+      return null;
+    }
+    return { question, options, answer };
+  };
+
+  const selectOption = (reel, optionKey) => {
+    testSelections = { ...testSelections, [reel.instanceId]: optionKey };
   };
 
   const scrollToIndex = async (index) => {
@@ -121,11 +145,49 @@
             {:else}
               <section class="reel-block">
                 <header>Test</header>
-                <div class="reel-markdown">
-                  {@html renderMarkdown(
-                    reel.test || "No test reel available yet.",
-                  )}
-                </div>
+                {#if parseTest(reel.test)}
+                  {@const parsed = parseTest(reel.test)}
+                  <div class="reel-test">
+                    <div class="reel-test-question">
+                      {parsed.question}
+                    </div>
+                    <div class="reel-test-options">
+                      {#each parsed.options as option}
+                        <button
+                          class={`reel-test-option ${
+                            testSelections[reel.instanceId] === option.key
+                              ? "selected"
+                              : ""
+                          }`}
+                          type="button"
+                          onclick={() => selectOption(reel, option.key)}
+                        >
+                          <span class="reel-test-key">{option.key}</span>
+                          <span>{option.text}</span>
+                        </button>
+                      {/each}
+                    </div>
+                    {#if testSelections[reel.instanceId]}
+                      <div
+                        class={`reel-test-feedback ${
+                          testSelections[reel.instanceId] === parsed.answer
+                            ? "correct"
+                            : "incorrect"
+                        }`}
+                      >
+                        {testSelections[reel.instanceId] === parsed.answer
+                          ? "Correct!"
+                          : `Correct answer: ${parsed.answer}`}
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
+                  <div class="reel-markdown">
+                    {@html renderMarkdown(
+                      reel.test || "No test reel available yet.",
+                    )}
+                  </div>
+                {/if}
               </section>
             {/if}
           </div>
@@ -160,6 +222,7 @@
       rgba(31, 42, 68, 0.06),
       rgba(248, 249, 251, 0.92)
     );
+    padding-top: calc(env(safe-area-inset-top) + 1.5rem);
   }
 
   .reels-viewport {
@@ -341,6 +404,69 @@
     color: #fff;
     box-shadow: 0 12px 24px rgba(75, 95, 215, 0.3);
     cursor: pointer;
+  }
+
+  .reel-test {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .reel-test-question {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .reel-test-options {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .reel-test-option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.7rem;
+    align-items: start;
+    padding: 0.7rem 0.9rem;
+    border-radius: 14px;
+    border: 1px solid rgba(31, 42, 68, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .reel-test-option.selected {
+    border-color: var(--accent-indigo);
+    box-shadow: 0 10px 18px rgba(75, 95, 215, 0.18);
+  }
+
+  .reel-test-key {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(75, 95, 215, 0.16);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.75rem;
+  }
+
+  .reel-test-feedback {
+    padding: 0.6rem 0.8rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .reel-test-feedback.correct {
+    background: rgba(46, 125, 111, 0.14);
+    color: var(--primary);
+  }
+
+  .reel-test-feedback.incorrect {
+    background: rgba(75, 95, 215, 0.12);
+    color: var(--primary);
   }
 
   :global(.reels-viewport::-webkit-scrollbar) {

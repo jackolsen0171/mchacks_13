@@ -47,7 +47,7 @@ export async function load({ params }) {
       courseName: course.courseName
     },
     files: filesData,
-    topics: Array.from(course.topics)
+    topics: Array.from(course.topics ?? [])
   };
 }
 
