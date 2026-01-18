@@ -179,13 +179,12 @@
         <div class="tree-trunk" style={`height: ${treeHeight}%`}>
           {#each courses as course, index}
             {@const isLeft = index % 2 === 0}
-            {@const branchLength = 120}
             {@const branchBottom = Math.round(((index + 1) / (courseCount + 1)) * 100)}
             <div
               class="tree-branch"
-              style={`width: ${branchLength}px; bottom: ${branchBottom}%; ${
+              style={`bottom: ${branchBottom}%; ${
                 isLeft
-                  ? `left: -${branchLength - 4}px; transform: rotate(-8deg); transform-origin: right center;`
+                  ? `left: calc(-1 * (var(--branch-length) - 4px)); transform: rotate(-8deg); transform-origin: right center;`
                   : `left: 29px; transform: rotate(8deg); transform-origin: left center;`
               } animation-delay: ${index * 0.2}s;`}
             ></div>
@@ -193,8 +192,8 @@
               class="tree-leaf"
               style={`bottom: ${branchBottom}%; ${
                 isLeft
-                  ? `left: calc(50% - ${branchLength + 20}px); transform: translateY(220%);`
-                  : `left: calc(50% + ${branchLength + 20}px); transform: translateY(220%);`
+                  ? `left: calc(50% - (var(--branch-length) + var(--leaf-offset))); transform: translateY(220%);`
+                  : `left: calc(50% + (var(--branch-length) + var(--leaf-offset))); transform: translateY(220%);`
               } animation-delay: ${index * 0.2}s;`}
             >
               <a
@@ -358,7 +357,9 @@
   .tree-stage {
     position: relative;
     height: 26rem;
-    overflow: hidden;
+    overflow: visible;
+    --branch-length: 120px;
+    --leaf-offset: 20px;
   }
 
   .tree-trunk {
@@ -380,6 +381,7 @@
     background: #8b5b30;
     border-radius: 999px;
     animation: branchIn 0.6s ease both;
+    width: var(--branch-length);
   }
 
   .tree-leaf {
@@ -728,10 +730,12 @@
 
     .tree-stage {
       height: 22rem;
+      --branch-length: 70px;
+      --leaf-offset: 30px;
     }
 
     .tree-branch {
-      width: 80px !important;
+      height: 8px;
     }
   }
 </style>
