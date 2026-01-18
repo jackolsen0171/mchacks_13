@@ -1,4 +1,5 @@
 import { client } from '$lib/mongo_cert.js';
+import { PDFParse } from "pdf-parse";
 
 export const prerender = false;
 
@@ -26,10 +27,15 @@ export async function load({ params }) {
 /** @type {import('./$types').Actions} */
 export const actions = {
     addCourse: async ({ request }) => {
-        const data = await request.formData();
-        const courseCode = data.get('courseCode');
-        const courseName = data.get('courseName');
-        const courseSyllabus = data.get('courseSyllabus');
+        // This action will 
+        // [1] add a coure to the database 
+        // [2] Extract the topics from the syllabus 
+        // [3] Save the text of the pdf to the database 
+        // [4] save the topics to the database 
+        const form_data = await request.formData();
+        const courseCode = form_data.get('courseCode');
+        const courseName = form_data.get('courseName');
+        const courseSyllabus = form_data.get('courseSyllabus');
 
         if (!courseCode || !courseName) {
             return { success: false, error: 'Missing fields' };
@@ -42,17 +48,101 @@ export const actions = {
 
             // Insert course
             const syllabusData = Buffer.from(await courseSyllabus.arrayBuffer());
-            const result = await collection.insertOne({
+            const add_course_result = await collection.insertOne({
                 courseCode: courseCode,
                 courseName: courseName,
                 courseSyllabus: syllabusData,
                 createdAt: new Date()
             })
 
+            console.log("Course added successfully");
+
+            // Begin extracting topics from the syllabus 
+            console.log("Extracting topics from the syllabus...");
+
+
+
+            // Extract text from pdf 
+            const arrayBuffer = await syllabus.arrayBuffer();
+            const parser = new PDFParse({ data: new Uint8Array(arrayBuffer) });
+            const pdfData = await parser.getText();
+            const syllabusText = (pdfData?.text ?? "").trim();
+
+
+            // Extract topics from the file 
+
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${import.meta.env.VITE_GUMLOOP_API_KEY}`,
+                },
+                body: JSON.stringify({
+                    // Pass extracted text so the pipeline works on readable content.
+                    syllabus_file: syllabusText
+                })
+            };
+
+            let data;
+
+            await fetch(
+                "https://api.gumloop.com/api/v1/start_pipeline?user_id=GcvRdFXs4KVlwHemZ1O2oty8kTV2&saved_item_id=iuT4BcigkCUN8sNQ6H8U9i",
+                options,
+            )
+                .then((response) => response.json())
+                .then((response) => data = response)
+                .catch((err) => console.error(err));
+
+            const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            const url = `https://api.gumloop.com/api/v1/get_pl_run?run_id=${data.run_id}&user_id=${import.meta.env.VITE_GUMLOOP_USERID}`;
+            const headers = {
+                Authorization: `Bearer ${import.meta.env.VITE_GUMLOOP_API_KEY}`,
+            };
+
+            let result;
+            let isDone = false;
+            for (let attempt = 0; attempt < 12; attempt += 1) {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: headers,
+                });
+                result = await response.json();
+                isDone =
+                    result?.state === 'DONE' ||
+                    result?.status === 'completed' ||
+                    result?.status === 'succeeded';
+                if (isDone) {
+                    break;
+                }
+                await sleep(1000);
+            }
+
+            const topics = isDone
+                ? (result?.outputs?.output ??
+                    result?.output ??
+                    result?.result ??
+                    result?.data?.output ??
+                    JSON.stringify(result, null, 2))
+                : null;
+
+
+            // Output topics to console 
+            console.log("Topics: ", topics);
+
+            // Save text to the database 
+            const fileCollection = database.collection("files");
+            const fileDoc = {
+                courseId: courseId,
+                fileName: fileName,
+                fileData: syllabusText,
+                topics: topics
+            }
+            const add_topics_result = await fileCollection.insertOne(fileDoc);
+
             return {
                 success: true,
-                message: 'Course added successfully',
-                id: result.insertedId?.toString()
+                message: 'Course added successfully & topics saved successfully',
+                id: add_course_result.insertedId?.toString()
             };
 
         } catch (error) {
@@ -64,12 +154,12 @@ export const actions = {
     },
 
     addFile: async ({ request }) => {
-        const data = await request.formData();
-        const courseCode = data.get('courseCode');
-        const fileName = data.get('fileName');
-        const file = data.get('file');
-        
-        if (!courseCode || !file) {
+        const form_data = await request.formData();
+        const courseCode = form_data.get('courseCode');
+        const fileName = form_data.get('fileName');
+        const syllabus = form_data.get('courseSyallbus');
+
+        if (!courseCode || !fileName || !syllabus) {
             return { success: false, error: 'Missing fields' };
         }
 
@@ -93,6 +183,11 @@ export const actions = {
             }
 
             const result = await fileCollection.insertOne(fileDoc);
+
+            console.log("File added successfully");
+
+
+
 
             return {
                 success: true,
