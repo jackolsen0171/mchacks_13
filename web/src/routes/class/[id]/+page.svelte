@@ -39,6 +39,22 @@
   </header>
 
   <div class="topics">
+    <section class="topic-card">
+      <div class="topic-title">
+        <h2>Topics</h2>
+        <span>{data.topics?.length ?? 0} topics</span>
+      </div>
+      {#if data.topics?.length}
+        <div class="topic-pill-list">
+          {#each data.topics as topicName}
+            <span class="topic-pill">{topicName}</span>
+          {/each}
+        </div>
+      {:else}
+        <p class="empty-topic">No topics extracted yet.</p>
+      {/if}
+    </section>
+
     {#if data.files?.length}
       {#each groupByTopic(data.files) as topic}
         <section class="topic-card">
@@ -190,6 +206,27 @@
     border-radius: 1.5rem;
     border: 1px dashed var(--border);
     text-align: center;
+    color: #68748a;
+  }
+
+  .topic-pill-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .topic-pill {
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: #eef1f6;
+    color: #1f2a44;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .empty-topic {
+    margin: 1rem 0 0;
     color: #68748a;
   }
 </style>

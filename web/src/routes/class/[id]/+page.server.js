@@ -27,8 +27,18 @@ export async function load({ params }) {
     id: file._id.toString(),
     fileName: file.fileName ?? 'Untitled file',
     createdAt: file.createdAt ? file.createdAt.toISOString() : null,
-    topic: file.topic ?? 'Unassigned'
+    topic: file.topic ?? 'Unassigned',
+    topics: Array.isArray(file.topics) ? file.topics : file.topic ? [file.topic] : []
   }));
+
+  const topicSet = new Set();
+  for (const file of filesData) {
+    for (const topic of file.topics) {
+      if (topic && typeof topic === 'string') {
+        topicSet.add(topic);
+      }
+    }
+  }
 
   return {
     course: {
@@ -36,7 +46,8 @@ export async function load({ params }) {
       courseCode: course.courseCode,
       courseName: course.courseName
     },
-    files: filesData
+    files: filesData,
+    topics: Array.from(topicSet)
   };
 }
 
