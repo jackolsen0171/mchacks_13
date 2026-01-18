@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Maskable icon with safe zone (80% of viewBox) -->
+  <rect width="192" height="192" fill="#6366f1"/>
+  <circle cx="96" cy="96" r="56" fill="#ffffff"/>
+  <path d="M 96 50 L 115 80 L 147 85 L 122 107 L 128 139 L 96 119 L 64 139 L 70 107 L 45 85 L 77 80 Z" fill="#6366f1"/>
+</svg>
