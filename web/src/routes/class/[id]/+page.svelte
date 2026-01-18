@@ -107,7 +107,7 @@
   }
 
   .course-shell {
-    padding: 2.5rem 1.5rem 5rem;
+    padding: 2.5rem 1.5rem 7rem;
     color: var(--primary);
     display: grid;
     gap: 2rem;
