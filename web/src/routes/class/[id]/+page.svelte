@@ -129,10 +129,15 @@
     padding: 0.75rem 1rem;
     border-radius: 0.9rem;
     background: #f3f5f9;
+    align-items: flex-start;
   }
 
   .doc-name {
     font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .doc-meta {

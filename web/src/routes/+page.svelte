@@ -18,7 +18,7 @@
           ? "Your tree is growing."
           : courseCount < maxCourses
             ? "Your tree is flourishing."
-            : "Your knowledge tree is complete."
+            : "Your knowledge tree is complete.",
   );
 </script>
 
@@ -31,7 +31,11 @@
     </div>
     <div class="controls">
       {#if courseCount < maxCourses}
-        <button class="primary-button" type="button" on:click={() => (addCourseModalOpen = true)}>
+        <button
+          class="primary-button"
+          type="button"
+          on:click={() => (addCourseModalOpen = true)}
+        >
           + Add Course
         </button>
       {/if}
@@ -55,14 +59,28 @@
     >
       <div class="field">
         <label for="courseCode">Course code</label>
-        <input id="courseCode" name="courseCode" placeholder="MATH 242" required />
+        <input
+          id="courseCode"
+          name="courseCode"
+          placeholder="MATH 242"
+          required
+        />
       </div>
       <div class="field">
         <label for="courseName">Course name</label>
-        <input id="courseName" name="courseName" placeholder="Calculus II" required />
+        <input
+          id="courseName"
+          name="courseName"
+          placeholder="Calculus II"
+          required
+        />
       </div>
       <div class="form-actions">
-        <button class="secondary-button" type="button" on:click={() => (addCourseModalOpen = false)}>
+        <button
+          class="secondary-button"
+          type="button"
+          on:click={() => (addCourseModalOpen = false)}
+        >
           Cancel
         </button>
         <button class="primary-button" type="submit">Add</button>
@@ -72,8 +90,16 @@
 
   <div class="tree-card">
     <div class="tree-stage">
-      <div class="brain-pot" style={`transform: translateX(-50%) scale(${brainScale})`}>
-        <svg width="200" height="140" viewBox="80 440 200 140" aria-hidden="true">
+      <div
+        class="brain-pot"
+        style={`transform: translateX(-50%) scale(${brainScale})`}
+      >
+        <svg
+          width="200"
+          height="140"
+          viewBox="80 440 200 140"
+          aria-hidden="true"
+        >
           <g transform="translate(0,0)">
             <path
               d="M120 520
@@ -126,7 +152,7 @@
               style={`width: ${branchLength}px; bottom: ${55 + index * 13}%; ${
                 isLeft
                   ? `left: -${branchLength - 4}px; transform: rotate(-8deg); transform-origin: right center;`
-                  : `left: 36px; transform: rotate(8deg); transform-origin: left center;`
+                  : `left: 29px; transform: rotate(8deg); transform-origin: left center;`
               } animation-delay: ${index * 0.2}s;`}
             ></div>
             <div
@@ -134,13 +160,19 @@
               style={`bottom: ${55 + index * 13}%; ${
                 isLeft
                   ? `left: calc(50% - ${branchLength + 20}px); transform: translateY(220%);`
-                  : `left: calc(50% + ${branchLength + 20}px); transform: translate(-100%, 220%);`
+                  : `left: calc(50% + ${branchLength + 20}px); transform: translateY(220%);`
               } animation-delay: ${index * 0.2}s;`}
             >
-              <a class="leaf-pill" href={`/class/${course.id}`}>
+              <a
+                class="leaf-pill"
+                style={`${!isLeft ? "position: relative; top: 60px; right: 110px;" : "position: relative; top: 60px; right: 60px;"}`}
+                href={`/class/${course.id}`}
+              >
                 <span class="leaf-dot"></span>
-                <span>{course.courseCode}</span>
-                <span class="leaf-muted">{course.courseName}</span>
+                <span class="leaf-text">
+                  <span class="leaf-code">{course.courseCode}</span>
+                  <span class="leaf-muted">{course.courseName}</span>
+                </span>
               </a>
             </div>
           {/each}
@@ -265,14 +297,22 @@
   }
 
   .tree-card {
-    background: linear-gradient(180deg, rgba(46, 125, 111, 0.08), rgba(75, 95, 215, 0.08));
+    /* background: linear-gradient(
+      180deg,
+      rgba(46, 125, 111, 0.08),
+      rgba(75, 95, 215, 0.08)
+    ); */
     border-radius: 2rem;
     padding: 2.5rem 2rem;
     min-height: 28rem;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     margin-top: auto;
     margin-bottom: 3rem;
+    max-width: 720px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .tree-stage {
@@ -313,13 +353,23 @@
     gap: 0.5rem;
     padding: 0.6rem 1rem;
     border-radius: 999px;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    /* background: var(--surface);
+    border: 1px solid var(--border); */
     text-decoration: none;
     color: var(--primary);
     font-weight: 600;
-    box-shadow: 0 14px 24px rgba(31, 42, 68, 0.12);
+    /* box-shadow: 0 14px 24px rgba(31, 42, 68, 0.12); */
     white-space: nowrap;
+  }
+
+  .leaf-text {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .leaf-code {
+    font-weight: 700;
   }
 
   .leaf-dot {
