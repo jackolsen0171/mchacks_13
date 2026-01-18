@@ -66,6 +66,16 @@
     return { question, options, answer };
   };
 
+  // Strip answer from raw test content when parsing fails
+  const stripAnswerFromTest = (text) => {
+    if (!text) return text;
+    // Remove lines containing answer information
+    return text
+      .replace(/\*?\*?(correct\s*answer|answer)\s*[:=]\s*[A-Da-d]\*?\*?/gi, "")
+      .replace(/\n\s*\n\s*\n/g, "\n\n") // Clean up extra blank lines
+      .trim();
+  };
+
   const selectOption = async (reel, optionKey, correctAnswer) => {
     if (testSelections[reel.instanceId]) return;
     testSelections = { ...testSelections, [reel.instanceId]: optionKey };
@@ -258,7 +268,8 @@
                 {:else}
                   <div class="reel-markdown">
                     {@html renderMarkdown(
-                      reel.test || "No test reel available yet.",
+                      stripAnswerFromTest(reel.test) ||
+                        "No test reel available yet.",
                     )}
                   </div>
                 {/if}
