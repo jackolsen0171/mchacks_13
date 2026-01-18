@@ -84,13 +84,14 @@ export const actions = {
         createdAt: new Date()
       };
 
+      const file_result = await fileCollection.insertOne(fileDoc);
+      console.log("File added successfully: ", file_result.insertedId?.toString());
+
       const course_topics = courseDoc.topics;
 
       console.log("course_topics: ", course_topics);
 
-      // Call fumloop workflow
-
-      // Extract text from pdf
+      // Call gumloop workflow
       // Extract text from pdf 
       const arrayBuffer = await content_file.arrayBuffer();
       const parser = new PDFParse({ data: new Uint8Array(arrayBuffer) });
@@ -149,22 +150,37 @@ export const actions = {
 
         const reels = isDone ? result : [];
 
-        // const reels = isDone
-        //   ? (result?.outputs?.reels ??
-        //     result?.output?.reels ??
-        //     result?.result?.reels ??
-        //     result?.data?.output?.reels ??
-        //     [])
-        //   : [];
+        const titles = reels.outputs.title;
+        const topics = reels.outputs.topic;
+        const theory_reels = reels.outputs.theory_reel;
+        const test_reels = reels.outputs.test_reel;
+
+        const reelsCollection = database.collection("reels");
+
+        for (let i = 0; i < topics.length; i++) {
+          let reelDoc = {
+            courseId: courseDoc._id,
+            fileId: file_result.insertedId,
+            title: titles[i],
+            content: content_file_text,
+            topic: topics[i],
+            theory_reel: theory_reels[i],
+            test_reel: test_reels[i],
+            createdAt: new Date()
+          }
+          const reels_result = await reelsCollection.insertOne(reelDoc);
+          console.log("Reel added successfully: ", reels_result.insertedId?.toString());
+        }
 
         // Output topics to console
-        console.log("reels: ", reels);
+        // console.log("reels: ", reels);
       } catch (error) {
         console.error("Error generating reels: ", error);
       }
 
 
-      const reels_result = await fileCollection.insertOne(fileDoc);
+
+
 
       return {
         success: true,
