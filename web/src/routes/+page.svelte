@@ -3,6 +3,32 @@
 
   let { data } = $props();
   let addCourseModalOpen = $state(false);
+  let isSubmitting = $state(false);
+
+  // Prevent body scroll when modal is open and reset scroll on close
+  $effect(() => {
+    if (addCourseModalOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    };
+  });
 
   const maxCourses = 6;
   const courses = $derived(data?.courses ?? []);
@@ -41,63 +67,6 @@
       {/if}
     </div>
   </header>
-
-  {#if addCourseModalOpen && courseCount < maxCourses}
-    <form
-      class="course-form"
-      method="POST"
-      action="?/addCourse"
-      enctype="multipart/form-data"
-      use:enhance={() =>
-        async ({ result, update }) => {
-          if (result?.type === "success") {
-            if (update) {
-              await update();
-            }
-            addCourseModalOpen = false;
-          }
-        }}
-    >
-      <div class="field">
-        <label for="courseCode">Course Code</label>
-        <input
-          id="courseCode"
-          name="courseCode"
-          placeholder="MATH 242"
-          required
-        />
-      </div>
-      <div class="field">
-        <label for="courseName">Course Name</label>
-        <input
-          id="courseName"
-          name="courseName"
-          placeholder="Calculus II"
-          required
-        />
-      </div>
-      <div class="field">
-        <label for="courseSyllabus">Course Syllabus</label>
-        <input
-          id="courseSyllabus"
-          name="courseSyllabus"
-          type="file"
-          accept=".pdf"
-          required
-        />
-      </div>
-      <div class="form-actions">
-        <button
-          class="secondary-button"
-          type="button"
-          onclick={() => (addCourseModalOpen = false)}
-        >
-          Cancel
-        </button>
-        <button class="primary-button" type="submit">Add</button>
-      </div>
-    </form>
-  {/if}
 
   <div class="tree-card">
     <div class="tree-stage">
@@ -220,6 +189,82 @@
   </div>
 </section>
 
+{#if addCourseModalOpen && courseCount < maxCourses}
+  <div class="modal-backdrop" onclick={() => (addCourseModalOpen = false)} role="button" tabindex="-1" onkeydown={(e) => e.key === 'Escape' && (addCourseModalOpen = false)}></div>
+  <div class="modal-container">
+    <form
+      class="course-form modal-form"
+      method="POST"
+      action="?/addCourse"
+      enctype="multipart/form-data"
+      use:enhance={() => {
+        isSubmitting = true;
+        return async ({ result, update }) => {
+          isSubmitting = false;
+          if (result?.type === "success") {
+            if (update) {
+              await update();
+            }
+            addCourseModalOpen = false;
+          }
+        };
+      }}
+    >
+      {#if isSubmitting}
+        <div class="loading-overlay">
+          <div class="spinner"></div>
+          <p class="loading-text">Adding course...</p>
+        </div>
+      {/if}
+      <h2 class="form-title">Add New Course</h2>
+      <div class="field">
+        <label for="courseCode">Course Code</label>
+        <input
+          id="courseCode"
+          name="courseCode"
+          placeholder="MATH 242"
+          required
+          disabled={isSubmitting}
+        />
+      </div>
+      <div class="field">
+        <label for="courseName">Course Name</label>
+        <input
+          id="courseName"
+          name="courseName"
+          placeholder="Calculus II"
+          required
+          disabled={isSubmitting}
+        />
+      </div>
+      <div class="field">
+        <label for="courseSyllabus">Course Syllabus</label>
+        <input
+          id="courseSyllabus"
+          name="courseSyllabus"
+          type="file"
+          accept=".pdf"
+          required
+          disabled={isSubmitting}
+        />
+      </div>
+      <div class="form-actions">
+        <button
+          class="secondary-button"
+          type="button"
+          onclick={() => (addCourseModalOpen = false)}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </button>
+        <button class="primary-button" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Adding...' : 'Add'}
+        </button>
+      </div>
+    </form>
+  </div>
+{/if}
+
 <style>
   :global(:root) {
     --primary: #492828;
@@ -232,6 +277,12 @@
 
   :global(html) {
     background-color: var(--background);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  :global(body) {
+    touch-action: manipulation; /* Prevents double-tap zoom */
   }
 
   .dashboard {
@@ -316,11 +367,14 @@
     max-width: 32rem;
     box-shadow: 0 20px 40px rgba(31, 42, 68, 0.08);
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .field {
     display: grid;
     gap: 0.4rem;
+    min-width: 0;
   }
 
   label {
@@ -333,14 +387,129 @@
     border: 1px solid var(--border);
     border-radius: 0.9rem;
     padding: 0.75rem 1rem;
-    font-size: 1rem;
+    font-size: 16px; /* Prevents iOS zoom on focus */
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--background);
+    -webkit-appearance: none; /* Removes iOS default styling */
+    appearance: none;
   }
 
   .form-actions {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
+  }
+
+  /* Modal Overlay Styles */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(73, 40, 40, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    animation: fadeIn 0.2s ease;
+    cursor: pointer;
+  }
+
+  .modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 101;
+    padding: 1.5rem;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+
+  .modal-form {
+    pointer-events: auto;
+    animation: slideUp 0.3s ease;
+    max-width: 28rem;
+    width: calc(100% - 2rem);
+    box-shadow: 0 25px 50px rgba(73, 40, 40, 0.25);
+    margin: auto;
+    position: relative;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+    margin: 0 0 1.25rem;
+    font-family: "Fraunces", "Times New Roman", serif;
+    color: var(--primary);
+  }
+
+  /* Loading Overlay */
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(239, 233, 227, 0.92);
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 10;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(73, 40, 40, 0.15);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loading-text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--primary);
+    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+    font-weight: 500;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  input:disabled,
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   .tree-card {
