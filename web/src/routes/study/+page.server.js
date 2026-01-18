@@ -44,6 +44,7 @@ export async function load() {
             theory_reel: reel.theory_reel ?? '',
             test_reel: reel.test_reel ?? '',
             level: typeof reel.level === 'number' ? reel.level : 0,
+            answeredOption: reel.answeredOption ?? null,
             createdAt: reel.createdAt ? reel.createdAt.toISOString() : null
         };
     });
@@ -131,5 +132,36 @@ export const actions = {
         );
 
         return { success: true, newProgress };
+    },
+
+    saveAnswer: async ({ request }) => {
+        const formData = await request.formData();
+        const reelId = formData.get('reelId');
+        const answeredOption = formData.get('answeredOption');
+
+        if (!reelId || typeof reelId !== 'string') {
+            return { success: false, error: 'Missing reel id' };
+        }
+        if (!answeredOption || typeof answeredOption !== 'string') {
+            return { success: false, error: 'Missing answer' };
+        }
+
+        let objectId;
+        try {
+            objectId = new ObjectId(reelId);
+        } catch {
+            return { success: false, error: 'Invalid reel id' };
+        }
+
+        await client.connect();
+        const database = client.db('brainrejuvenate');
+        const collection = database.collection('reels');
+
+        await collection.updateOne(
+            { _id: objectId },
+            { $set: { answeredOption: answeredOption } }
+        );
+
+        return { success: true };
     }
 };

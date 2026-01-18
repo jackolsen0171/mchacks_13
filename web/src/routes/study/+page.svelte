@@ -10,7 +10,6 @@
 
   let activeTabs = {};
   let viewport;
-  let testSelections = {};
 
   let reels = (data?.reels ?? []).map((reel, index) => ({
     id: reel.id,
@@ -25,7 +24,17 @@
     courseId: reel.courseId ?? null,
     topicProgress:
       typeof reel?.topicProgress === "number" ? reel.topicProgress : 0,
+    answeredOption: reel.answeredOption ?? null,
   }));
+
+  // Initialize testSelections with already answered reels
+  let initialSelections = {};
+  for (const reel of reels) {
+    if (reel.answeredOption) {
+      initialSelections[reel.instanceId] = reel.answeredOption;
+    }
+  }
+  let testSelections = initialSelections;
 
   let nextInstanceId = reels.length;
 
@@ -60,6 +69,15 @@
   const selectOption = async (reel, optionKey, correctAnswer) => {
     if (testSelections[reel.instanceId]) return;
     testSelections = { ...testSelections, [reel.instanceId]: optionKey };
+
+    // Save the answer to the database
+    const saveFormData = new FormData();
+    saveFormData.set("reelId", reel.id);
+    saveFormData.set("answeredOption", optionKey);
+    await fetch("?/saveAnswer", {
+      method: "POST",
+      body: saveFormData,
+    });
 
     // If correct answer, update topic progress
     if (optionKey === correctAnswer && reel.courseId && reel.chip) {
@@ -104,12 +122,22 @@
       reels = reels.map((item, i) =>
         i === index ? { ...item, level: nextLevel } : item,
       );
+      const newInstanceId = `reel-${nextInstanceId++}`;
       const appendedReel = {
         ...reel,
         level: nextLevel,
-        instanceId: `reel-${nextInstanceId++}`,
+        instanceId: newInstanceId,
       };
       reels = [...reels, appendedReel];
+
+      // Carry over the answer selection to the new instance
+      if (testSelections[reel.instanceId]) {
+        testSelections = {
+          ...testSelections,
+          [newInstanceId]: testSelections[reel.instanceId],
+        };
+      }
+
       const { [reel.instanceId]: _removed, ...rest } = activeTabs;
       activeTabs = rest;
       const nextIndex = (index + 1) % reels.length;
@@ -264,7 +292,6 @@
     font-family: "Fraunces", "Times New Roman", serif;
     min-height: 100dvh;
     background: #fffaf6;
-    padding-top: calc(env(safe-area-inset-top) + 1.5rem);
   }
 
   .reels-viewport {
@@ -273,7 +300,8 @@
     height: 100dvh;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
-    padding: 0;
+    padding-top: calc(env(safe-area-inset-top) + 1.5rem);
+    scroll-padding-top: calc(env(safe-area-inset-top) + 1.5rem);
     scrollbar-color: rgba(73, 40, 40, 0.25) transparent;
   }
 

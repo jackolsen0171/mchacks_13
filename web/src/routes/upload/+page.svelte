@@ -125,26 +125,16 @@
 
 <style>
   :global(:root) {
-    --primary: #1f2a44;
-    --background: #f8f9fb;
-    --surface: #ffffff;
-    --border: #e4e7ec;
-    --accent-green: #2e7d6f;
-    --accent-indigo: #4b5fd7;
+    --primary: #492828;
+    --background: #efe9e3;
+    --surface: #efe9e3;
+    --border: #492828;
+    --accent-green: #84934a;
+    --accent-indigo: #656d3f;
   }
 
   :global(html) {
-    background: radial-gradient(
-        circle at top,
-        rgba(75, 95, 215, 0.15),
-        transparent 55%
-      ),
-      radial-gradient(
-        circle at bottom,
-        rgba(46, 125, 111, 0.12),
-        transparent 60%
-      ),
-      var(--background);
+    background: var(--background);
   }
 
   .upload-page {
@@ -177,23 +167,24 @@
 
   .subtitle {
     margin: 0;
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.75);
     max-width: 34rem;
+    font-family: "Avenir Next", "Helvetica Neue", sans-serif;
   }
 
   .hero-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(73, 40, 40, 0.15);
     border-radius: 1.5rem;
     padding: 1.5rem;
-    box-shadow: 0 20px 40px rgba(31, 42, 68, 0.08);
+    box-shadow: 0 20px 40px rgba(73, 40, 40, 0.08);
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
   }
 
   .hero-card ul {
     margin: 0.75rem 0 0;
     padding-left: 1rem;
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.7);
   }
 
   .hero-label {
@@ -211,11 +202,11 @@
   }
 
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(73, 40, 40, 0.15);
     border-radius: 1.75rem;
     padding: 2rem;
-    box-shadow: 0 18px 36px rgba(31, 42, 68, 0.08);
+    box-shadow: 0 18px 36px rgba(73, 40, 40, 0.08);
   }
 
   .upload-form h2 {
@@ -224,7 +215,7 @@
 
   .upload-form p {
     margin: 0.5rem 0 1.5rem;
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.7);
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
   }
 
@@ -239,26 +230,26 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #5a6780;
+    color: rgba(73, 40, 40, 0.65);
   }
 
   select {
-    border: 1px solid var(--border);
+    border: 1px solid rgba(73, 40, 40, 0.2);
     border-radius: 0.9rem;
     padding: 0.75rem 1rem;
     font-size: 1rem;
-    background: #fdfdff;
+    background: rgba(255, 255, 255, 0.6);
     color: var(--primary);
   }
 
   .dropzone {
     display: block;
     border-radius: 1.4rem;
-    border: 1px dashed rgba(75, 95, 215, 0.4);
+    border: 1px dashed rgba(132, 147, 74, 0.5);
     background: linear-gradient(
       145deg,
-      rgba(75, 95, 215, 0.08),
-      rgba(46, 125, 111, 0.08)
+      rgba(132, 147, 74, 0.1),
+      rgba(101, 109, 63, 0.08)
     );
     padding: 2rem;
     cursor: pointer;
@@ -286,7 +277,7 @@
 
   .drop-subtitle {
     margin: 0;
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.6);
   }
 
   .form-actions {
@@ -301,9 +292,9 @@
     font-weight: 700;
     border: none;
     cursor: pointer;
-    background: var(--accent-indigo);
+    background: var(--accent-green);
     color: #fff;
-    box-shadow: 0 14px 30px rgba(75, 95, 215, 0.3);
+    box-shadow: 0 14px 30px rgba(132, 147, 74, 0.3);
     transition: opacity 0.2s ease;
   }
 
@@ -320,7 +311,7 @@
   .loading-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(239, 233, 227, 0.92);
     border-radius: 1.75rem;
     display: flex;
     flex-direction: column;
@@ -333,8 +324,8 @@
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(75, 95, 215, 0.15);
-    border-top-color: var(--accent-indigo);
+    border: 3px solid rgba(132, 147, 74, 0.2);
+    border-top-color: var(--accent-green);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -357,7 +348,7 @@
   .dropzone.has-file {
     border-color: var(--accent-green);
     border-style: solid;
-    background: rgba(46, 125, 111, 0.08);
+    background: rgba(132, 147, 74, 0.1);
   }
 
   .file-selected {
@@ -389,7 +380,7 @@
   }
 
   .upload-side p {
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.7);
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
   }
 
@@ -397,7 +388,7 @@
     margin-top: 2rem;
     padding: 1.2rem;
     border-radius: 1.2rem;
-    background: rgba(46, 125, 111, 0.08);
+    background: rgba(132, 147, 74, 0.1);
     display: grid;
     gap: 0.4rem;
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
@@ -409,7 +400,7 @@
   }
 
   .accent-body {
-    color: #52607a;
+    color: rgba(73, 40, 40, 0.7);
   }
 
   @media (max-width: 720px) {
