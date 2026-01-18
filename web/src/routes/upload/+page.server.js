@@ -29,41 +29,6 @@ export async function load({ params }) {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  addCourse: async ({ request }) => {
-    const data = await request.formData();
-    const courseCode = data.get('courseCode');
-    const courseName = data.get('courseName');
-
-    if (!courseCode || !courseName) {
-      return { success: false, error: 'Missing fields' };
-    }
-
-    try {
-      // Get database and collection
-      const database = client.db("brainrejuvenate");
-      const collection = database.collection("courses");
-
-      // Insert course 
-      const result = await collection.insertOne({
-        courseCode: courseCode,
-        courseName: courseName,
-        createdAt: new Date()
-      })
-
-      return {
-        success: true,
-        message: 'Course added successfully',
-        id: result.insertedId?.toString()
-      };
-
-    } catch (error) {
-      return {
-        success: false,
-        error: 'Failed to add course: ' + error.message
-      }
-    }
-  },
-
   addFile: async ({ request }) => {
     const data = await request.formData();
     const courseId = data.get('courseId');
