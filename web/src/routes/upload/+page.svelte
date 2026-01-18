@@ -8,8 +8,8 @@
       <p class="eyebrow">Upload</p>
       <h1>Bring your materials to life</h1>
       <p class="subtitle">
-        Drop lecture slides, notes, or readings. We will keep everything tied to the right course
-        so your study sessions stay sharp.
+        Drop lecture slides, notes, or readings. We will keep everything tied to
+        the right course so your study sessions stay sharp.
       </p>
     </div>
     <div class="hero-card">
@@ -23,7 +23,12 @@
   </header>
 
   <div class="upload-grid">
-    <form class="card upload-form" method="POST" action="?/addFile" enctype="multipart/form-data">
+    <form
+      class="card upload-form"
+      method="POST"
+      action="?/addFile"
+      enctype="multipart/form-data"
+    >
       <div class="form-header">
         <h2>Upload materials</h2>
         <p>Select a course and add files to grow your knowledge tree.</p>
@@ -46,10 +51,12 @@
       </div>
 
       <label class="dropzone" for="fileInput">
-        <input id="fileInput" name="file" type="file" multiple required />
+        <input id="fileInput" name="content_file" type="file" required />
         <div class="dropzone-inner">
           <p class="drop-title">Drag files here</p>
-          <p class="drop-subtitle">or browse to select files from your device</p>
+          <p class="drop-subtitle">
+            or browse to select files from your device
+          </p>
         </div>
       </label>
 
@@ -61,11 +68,14 @@
     <div class="card upload-side">
       <h2>What happens next?</h2>
       <p>
-        We will scan each document for key topics and turn them into review-ready study prompts.
+        We will scan each document for key topics and turn them into
+        review-ready study prompts.
       </p>
       <div class="accent-block">
         <span class="accent-title">Stay consistent</span>
-        <span class="accent-body">Upload after every lecture to keep the tree thriving.</span>
+        <span class="accent-body"
+          >Upload after every lecture to keep the tree thriving.</span
+        >
       </div>
     </div>
   </div>
@@ -82,8 +92,16 @@
   }
 
   :global(html) {
-    background: radial-gradient(circle at top, rgba(75, 95, 215, 0.15), transparent 55%),
-      radial-gradient(circle at bottom, rgba(46, 125, 111, 0.12), transparent 60%),
+    background: radial-gradient(
+        circle at top,
+        rgba(75, 95, 215, 0.15),
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at bottom,
+        rgba(46, 125, 111, 0.12),
+        transparent 60%
+      ),
       var(--background);
   }
 
@@ -195,7 +213,11 @@
     display: block;
     border-radius: 1.4rem;
     border: 1px dashed rgba(75, 95, 215, 0.4);
-    background: linear-gradient(145deg, rgba(75, 95, 215, 0.08), rgba(46, 125, 111, 0.08));
+    background: linear-gradient(
+      145deg,
+      rgba(75, 95, 215, 0.08),
+      rgba(46, 125, 111, 0.08)
+    );
     padding: 2rem;
     cursor: pointer;
     position: relative;
