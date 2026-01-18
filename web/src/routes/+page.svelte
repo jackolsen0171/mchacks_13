@@ -4,7 +4,7 @@
   let { data } = $props();
   let addCourseModalOpen = $state(false);
 
-  const maxCourses = 5;
+  const maxCourses = 6;
   const courses = $derived(data?.courses ?? []);
   const courseCount = $derived(courses.length);
   const treeHeight = $derived(Math.min(90, 25 + courseCount * 12));
@@ -47,6 +47,7 @@
       class="course-form"
       method="POST"
       action="?/addCourse"
+      enctype="multipart/form-data"
       use:enhance={() =>
         async ({ result, update }) => {
           if (result?.type === "success") {
@@ -58,7 +59,7 @@
         }}
     >
       <div class="field">
-        <label for="courseCode">Course code</label>
+        <label for="courseCode">Course Code</label>
         <input
           id="courseCode"
           name="courseCode"
@@ -67,11 +68,21 @@
         />
       </div>
       <div class="field">
-        <label for="courseName">Course name</label>
+        <label for="courseName">Course Name</label>
         <input
           id="courseName"
           name="courseName"
           placeholder="Calculus II"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="courseSyllabus">Course Syllabus</label>
+        <input
+          id="courseSyllabus"
+          name="courseSyllabus"
+          type="file"
+          accept=".pdf"
           required
         />
       </div>

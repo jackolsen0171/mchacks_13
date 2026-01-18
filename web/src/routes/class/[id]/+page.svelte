@@ -26,7 +26,7 @@
         <button
           class="delete-button"
           type="submit"
-          on:click={(event) => {
+          onclick={(event) => {
             if (!confirm("Delete this course and all its documents?")) {
               event.preventDefault();
             }

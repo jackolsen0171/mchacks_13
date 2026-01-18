@@ -3,7 +3,6 @@ import { client } from '$lib/mongo_cert.js';
 export const prerender = false;
 
 /** @type {import('./$types').PageLoad} */
-
 export async function load({ params }) {
     await client.connect();
     const database = client.db("brainrejuvenate");
@@ -19,9 +18,7 @@ export async function load({ params }) {
         createdAt: course.createdAt.toISOString()
     }))
 
-    database.runCursorCommand({ ping: 1 });
     return {
-        success: true,
         courses: coursesData
     };
 }
@@ -32,6 +29,7 @@ export const actions = {
         const data = await request.formData();
         const courseCode = data.get('courseCode');
         const courseName = data.get('courseName');
+        const courseSyllabus = data.get('courseSyllabus');
 
         if (!courseCode || !courseName) {
             return { success: false, error: 'Missing fields' };
@@ -42,10 +40,12 @@ export const actions = {
             const database = client.db("brainrejuvenate");
             const collection = database.collection("courses");
 
-            // Insert course 
+            // Insert course
+            const syllabusData = Buffer.from(await courseSyllabus.arrayBuffer());
             const result = await collection.insertOne({
                 courseCode: courseCode,
                 courseName: courseName,
+                courseSyllabus: syllabusData,
                 createdAt: new Date()
             })
 
