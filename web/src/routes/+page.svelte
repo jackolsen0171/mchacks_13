@@ -7,7 +7,7 @@
   const maxCourses = 6;
   const courses = $derived(data?.courses ?? []);
   const courseCount = $derived(courses.length);
-  const treeHeight = $derived(Math.min(90, 25 + courseCount * 12));
+  const treeHeight = $derived(Math.min(80, 25 + courseCount * 12));
   const brainScale = $derived(Math.min(1.15, 0.65 + courseCount * 0.1));
   const statusMessage = $derived(
     courseCount === 0
@@ -26,7 +26,7 @@
   <header class="dashboard-header">
     <div>
       <p class="eyebrow">Dashboard</p>
-      <h1>Brain Rejuvenate</h1>
+      <h1>Bloom Scroll</h1>
       <p class="subtitle">Watch your knowledge tree grow with each course.</p>
     </div>
     <div class="controls">
