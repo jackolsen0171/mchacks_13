@@ -8,25 +8,25 @@
   // Prevent body scroll when modal is open and reset scroll on close
   $effect(() => {
     if (addCourseModalOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
       document.body.style.top = `-${window.scrollY}px`;
     } else {
       const scrollY = document.body.style.top;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
       }
     }
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
     };
   });
 
@@ -91,12 +91,7 @@
         class="brain-pot"
         style={`transform: translateX(-50%) scale(${brainScale})`}
       >
-        <svg
-          width="200"
-          height="140"
-          viewBox="0 0 240 140"
-          aria-hidden="true"
-        >
+        <svg width="200" height="140" viewBox="0 0 240 140" aria-hidden="true">
           <g>
             <path
               d="M60 40
@@ -148,14 +143,22 @@
         <div class="tree-trunk" style={`height: ${treeHeight}%`}>
           {#each courses as course, index}
             {@const isLeft = index % 2 === 0}
-            {@const branchBottom = Math.round(((index + 1) / (courseCount + 1)) * 100)}
+            {@const branchBottom = Math.round(
+              ((index + 1) / (courseCount + 1)) * 100,
+            )}
             <div
               class="branch-group"
               class:left={isLeft}
               class:right={!isLeft}
               style={`bottom: ${branchBottom}%; animation-delay: ${index * 0.15}s;`}
             >
-              <div class="tree-branch"></div>
+              <div class="tree-branch">
+                <span class="branch-leaves">
+                  <span class="tiny-leaf"></span>
+                  <span class="tiny-leaf"></span>
+                  <span class="tiny-leaf"></span>
+                </span>
+              </div>
               <a class="leaf-label" href={`/class/${course.id}`}>
                 <span class="leaf-dot"></span>
                 <span class="leaf-text">
@@ -177,7 +180,13 @@
 </section>
 
 {#if addCourseModalOpen && courseCount < maxCourses}
-  <div class="modal-backdrop" onclick={() => (addCourseModalOpen = false)} role="button" tabindex="-1" onkeydown={(e) => e.key === 'Escape' && (addCourseModalOpen = false)}></div>
+  <div
+    class="modal-backdrop"
+    onclick={() => (addCourseModalOpen = false)}
+    role="button"
+    tabindex="-1"
+    onkeydown={(e) => e.key === "Escape" && (addCourseModalOpen = false)}
+  ></div>
   <div class="modal-container">
     <form
       class="course-form modal-form"
@@ -245,7 +254,7 @@
           Cancel
         </button>
         <button class="primary-button" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Adding...' : 'Add'}
+          {isSubmitting ? "Adding..." : "Add"}
         </button>
       </div>
     </form>
@@ -555,17 +564,17 @@
         transparent 12px
       ),
       /* Base wood gradient */
-      linear-gradient(
-        180deg,
-        #c4956a 0%,
-        #a87d52 15%,
-        #8f6840 40%,
-        #7a5633 60%,
-        #6d4a2a 100%
-      );
+        linear-gradient(
+          180deg,
+          #c4956a 0%,
+          #a87d52 15%,
+          #8f6840 40%,
+          #7a5633 60%,
+          #6d4a2a 100%
+        );
     border-radius: 6px 6px 0 0;
     transition: height 0.8s ease;
-    box-shadow: 
+    box-shadow:
       inset -8px 0 12px rgba(0, 0, 0, 0.25),
       inset 3px 0 8px rgba(255, 220, 180, 0.15),
       2px 0 6px rgba(0, 0, 0, 0.15);
@@ -573,7 +582,7 @@
   }
 
   .tree-trunk::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -581,15 +590,26 @@
     bottom: 0;
     border-radius: inherit;
     background: 
-      /* Knots and irregularities */
-      radial-gradient(ellipse 6px 4px at 25% 20%, rgba(60, 35, 15, 0.4) 0%, transparent 70%),
-      radial-gradient(ellipse 5px 3px at 70% 55%, rgba(50, 30, 12, 0.35) 0%, transparent 70%),
-      radial-gradient(ellipse 4px 3px at 30% 75%, rgba(55, 32, 14, 0.3) 0%, transparent 70%);
+      /* Knots and irregularities */ radial-gradient(
+        ellipse 6px 4px at 25% 20%,
+        rgba(60, 35, 15, 0.4) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 5px 3px at 70% 55%,
+        rgba(50, 30, 12, 0.35) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 4px 3px at 30% 75%,
+        rgba(55, 32, 14, 0.3) 0%,
+        transparent 70%
+      );
     pointer-events: none;
   }
 
   .tree-trunk::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -597,8 +617,7 @@
     bottom: 0;
     border-radius: inherit;
     background: 
-      /* Bark texture - vertical striations */
-      repeating-linear-gradient(
+      /* Bark texture - vertical striations */ repeating-linear-gradient(
         180deg,
         transparent 0px,
         transparent 6px,
@@ -643,8 +662,7 @@
     width: var(--branch-length);
     height: 12px;
     background: 
-      /* Wood grain on branch */
-      repeating-linear-gradient(
+      /* Wood grain on branch */ repeating-linear-gradient(
         90deg,
         transparent 0px,
         transparent 3px,
@@ -657,7 +675,7 @@
     border-radius: 3px 12px 12px 3px;
     flex-shrink: 0;
     position: relative;
-    box-shadow: 
+    box-shadow:
       inset 0 -3px 4px rgba(0, 0, 0, 0.2),
       inset 0 2px 3px rgba(255, 220, 180, 0.15),
       0 2px 4px rgba(0, 0, 0, 0.1);
@@ -665,12 +683,16 @@
 
   /* Branch joint - where it connects to trunk */
   .tree-branch::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 18px;
     height: 18px;
-    background: 
-      radial-gradient(ellipse at center, #7a5633 20%, #6d4a2a 60%, rgba(109, 74, 42, 0) 100%);
+    background: radial-gradient(
+      ellipse at center,
+      #7a5633 20%,
+      #6d4a2a 60%,
+      rgba(109, 74, 42, 0) 100%
+    );
     border-radius: 50%;
     top: 50%;
     transform: translateY(-50%);
@@ -678,8 +700,7 @@
   }
 
   .branch-group.left .tree-branch {
-    background: 
-      repeating-linear-gradient(
+    background: repeating-linear-gradient(
         90deg,
         transparent 0px,
         transparent 3px,
@@ -709,22 +730,153 @@
     left: -6px;
   }
 
+  /* Branch tip leaves */
+  .branch-leaves {
+    position: absolute;
+    display: flex;
+    gap: 2px;
+    z-index: 2;
+  }
+
+  .branch-group.left .branch-leaves {
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .branch-group.right .branch-leaves {
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tiny-leaf {
+    display: block;
+    width: 14px;
+    height: 8px;
+    background: linear-gradient(135deg, #7cb342 0%, #558b2f 50%, #33691e 100%);
+    border-radius: 70% 0 70% 0;
+    position: relative;
+    box-shadow:
+      inset -1px -1px 2px rgba(0, 0, 0, 0.2),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.2);
+    animation: leafSway 3s ease-in-out infinite;
+    transform-origin: right center;
+  }
+
+  /* Left branch leaves - stems point right (toward branch) */
+  .branch-group.left .tiny-leaf {
+    border-radius: 70% 0 70% 0;
+    background: linear-gradient(45deg, #33691e 0%, #558b2f 50%, #7cb342 100%);
+    transform-origin: 100% 50%;
+  }
+
+  .branch-group.left .tiny-leaf::before {
+    content: "";
+    position: absolute;
+    width: 70%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(51, 105, 30, 0.6) 0%,
+      transparent 100%
+    );
+    top: 50%;
+    right: 0;
+    transform: rotate(15deg);
+  }
+
+  .branch-group.left .tiny-leaf:nth-child(1) {
+    transform: rotate(-40deg);
+    animation-delay: 0s;
+    --leaf-rotate: -40deg;
+  }
+
+  .branch-group.left .tiny-leaf:nth-child(2) {
+    transform: rotate(-5deg);
+    width: 16px;
+    height: 10px;
+    animation-delay: 0.3s;
+    --leaf-rotate: -5deg;
+  }
+
+  .branch-group.left .tiny-leaf:nth-child(3) {
+    transform: rotate(30deg);
+    animation-delay: 0.6s;
+    --leaf-rotate: 30deg;
+  }
+
+  /* Right branch leaves - stems point left (toward branch) */
+  .branch-group.right .tiny-leaf {
+    border-radius: 0 70% 0 70%;
+    background: linear-gradient(225deg, #33691e 0%, #558b2f 50%, #7cb342 100%);
+    transform-origin: 0% 50%;
+  }
+
+  .branch-group.right .tiny-leaf::before {
+    content: "";
+    position: absolute;
+    width: 70%;
+    height: 1px;
+    background: linear-gradient(
+      270deg,
+      rgba(51, 105, 30, 0.6) 0%,
+      transparent 100%
+    );
+    top: 50%;
+    left: 0;
+    transform: rotate(-15deg);
+  }
+
+  .branch-group.right .tiny-leaf:nth-child(1) {
+    transform: rotate(40deg);
+    --leaf-rotate: 40deg;
+  }
+
+  .branch-group.right .tiny-leaf:nth-child(2) {
+    transform: rotate(5deg);
+    width: 16px;
+    height: 10px;
+    --leaf-rotate: 5deg;
+  }
+
+  .branch-group.right .tiny-leaf:nth-child(3) {
+    transform: rotate(-30deg);
+    --leaf-rotate: -30deg;
+  }
+
+  @keyframes leafSway {
+    0%,
+    100% {
+      transform: rotate(var(--leaf-rotate, 0deg));
+    }
+    50% {
+      transform: rotate(calc(var(--leaf-rotate, 0deg) + 4deg)) scale(1.02);
+    }
+  }
+
   .leaf-label {
     display: flex;
     align-items: center;
     gap: 0.6rem;
     padding: 0.5rem 0.9rem;
     border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.7);
+    /* background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(73, 40, 40, 0.1);
+    border: 1px solid rgba(73, 40, 40, 0.1); */
     text-decoration: none;
     color: var(--primary);
     font-family: "Avenir Next", "Helvetica Neue", sans-serif;
     white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(73, 40, 40, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* box-shadow: 0 4px 12px rgba(73, 40, 40, 0.08); */
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -870,7 +1022,11 @@
     content: "";
     height: 125px;
     width: 10px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0)
+    );
     display: block;
     transform: rotate(125deg);
     position: absolute;
@@ -900,40 +1056,40 @@
     top: 0;
   }
 
-  .leaves i:nth-of-type(2n+1) {
+  .leaves i:nth-of-type(2n + 1) {
     height: 11px;
     width: 16px;
     animation-delay: 3.9s;
   }
 
-  .leaves i:nth-of-type(2n+1):before {
+  .leaves i:nth-of-type(2n + 1):before {
     width: 4px;
     height: 3px;
     top: 7px;
     right: 0;
   }
 
-  .leaves i:nth-of-type(2n+1):after {
+  .leaves i:nth-of-type(2n + 1):after {
     width: 2px;
     height: 6px;
     left: 5px;
     top: 1px;
   }
 
-  .leaves i:nth-of-type(3n+2) {
+  .leaves i:nth-of-type(3n + 2) {
     height: 17px;
     width: 23px;
     animation-delay: 2.3s;
   }
 
-  .leaves i:nth-of-type(3n+2):before {
+  .leaves i:nth-of-type(3n + 2):before {
     height: 4px;
     width: 4px;
     top: 12px;
     right: 1px;
   }
 
-  .leaves i:nth-of-type(3n+2):after {
+  .leaves i:nth-of-type(3n + 2):after {
     height: 10px;
     width: 2px;
     top: 1px;
@@ -1000,19 +1156,19 @@
     background: linear-gradient(to bottom right, #309900, #005600);
   }
 
-  .leaves i:nth-of-type(2n+2) {
+  .leaves i:nth-of-type(2n + 2) {
     background: linear-gradient(to bottom right, #5e9900, #2b5600);
   }
 
-  .leaves i:nth-of-type(4n+1) {
+  .leaves i:nth-of-type(4n + 1) {
     background: linear-gradient(to bottom right, #990, #564500);
   }
 
-  .leaves i:nth-of-type(3n+1) {
+  .leaves i:nth-of-type(3n + 1) {
     opacity: 0.5;
   }
 
-  .leaves i:nth-of-type(3n+2) {
+  .leaves i:nth-of-type(3n + 2) {
     opacity: 0.3;
   }
 
@@ -1113,6 +1269,28 @@
 
     .branch-group.right .leaf-label {
       margin-left: 0.3rem;
+    }
+
+    .tiny-leaf {
+      width: 10px;
+      height: 6px;
+    }
+
+    .tiny-leaf:nth-child(2) {
+      width: 12px;
+      height: 7px;
+    }
+
+    .branch-leaves {
+      gap: 1px;
+    }
+
+    .branch-group.left .branch-leaves {
+      left: -8px;
+    }
+
+    .branch-group.right .branch-leaves {
+      right: -8px;
     }
   }
 </style>
