@@ -61,50 +61,5 @@ export const actions = {
                 error: 'Failed to add course: ' + error.message
             }
         }
-    },
-
-    addFile: async ({ request }) => {
-        const data = await request.formData();
-        const courseCode = data.get('courseCode');
-        const fileName = data.get('fileName');
-        const file = data.get('file');
-        
-        if (!courseCode || !file) {
-            return { success: false, error: 'Missing fields' };
-        }
-
-        try {
-            // Find relevant course ID
-            const database = client.db("brainrejuvenate");
-            const courseCollection = database.collection("courses");
-            const courseDoc = await courseCollection.findOne({ courseCode: courseCode });
-            if (!courseDoc) {
-                return { success: false, error: 'Course not found' };
-            }
-            const courseId = courseDoc._id;
-
-            // Insert file into files collection
-            const fileCollection = database.collection("files");
-
-            fileDoc = {
-                courseId: courseId,
-                fileName: fileName,
-                fileData: await file.arrayBuffer()
-            }
-
-            const result = await fileCollection.insertOne(fileDoc);
-
-            return {
-                success: true,
-                message: 'File added successfully',
-                id: result.insertedId?.toString()
-            };
-
-        } catch (error) {
-            return {
-                success: false,
-                error: 'Failed to add file: ' + error.message
-            }
-        }
     }
 };
