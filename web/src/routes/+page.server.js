@@ -102,13 +102,19 @@ export const actions = {
                 await sleep(1000);
             }
 
-            const topics = isDone
+            const topicStrings = isDone
                 ? (result?.outputs?.key_topics ??
                     result?.output?.key_topics ??
                     result?.result?.key_topics ??
                     result?.data?.output?.key_topics ??
                     [])
                 : [];
+
+            // Convert topic strings to objects with progress tracking
+            const topics = topicStrings.map(topicName => ({
+                name: typeof topicName === 'string' ? topicName : String(topicName),
+                progress: 0
+            }));
 
             // Output topics to console
             console.log("Topics: ", topics);

@@ -528,7 +528,7 @@
 
   .tree-trunk {
     position: absolute;
-    bottom: 5.5rem;
+    bottom: 4rem;
     left: 50%;
     transform: translateX(-50%);
     width: 32px;

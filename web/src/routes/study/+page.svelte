@@ -22,6 +22,9 @@
     test: reel?.test_reel ?? "",
     level: typeof reel?.level === "number" ? reel.level : 0,
     meta: reel.createdAt ? new Date(reel.createdAt).toLocaleDateString() : "",
+    courseId: reel.courseId ?? null,
+    topicProgress:
+      typeof reel?.topicProgress === "number" ? reel.topicProgress : 0,
   }));
 
   let nextInstanceId = reels.length;
@@ -54,9 +57,30 @@
     return { question, options, answer };
   };
 
-  const selectOption = (reel, optionKey) => {
+  const selectOption = async (reel, optionKey, correctAnswer) => {
     if (testSelections[reel.instanceId]) return;
     testSelections = { ...testSelections, [reel.instanceId]: optionKey };
+
+    // If correct answer, update topic progress
+    if (optionKey === correctAnswer && reel.courseId && reel.chip) {
+      const formData = new FormData();
+      formData.set("courseId", reel.courseId);
+      formData.set("topicName", reel.chip);
+      formData.set("increment", "10");
+
+      const response = await fetch("?/updateTopicProgress", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Optimistically update the progress in the UI
+        const newProgress = Math.min(100, reel.topicProgress + 10);
+        reels = reels.map((r) =>
+          r.chip === reel.chip ? { ...r, topicProgress: newProgress } : r,
+        );
+      }
+    }
   };
 
   const scrollToIndex = async (index) => {
@@ -104,7 +128,15 @@
       <article class={`reel-card reel-card--${reel.theme}`}>
         <div class="reel-rail"></div>
         <div class="reel-content">
-          <span class="reel-chip">{reel.chip}</span>
+          <div class="reel-chip-wrapper">
+            <div class="reel-chip-bg"></div>
+            <div
+              class="reel-chip-fill"
+              style={`width: ${reel.topicProgress}%`}
+            ></div>
+            <span class="reel-chip-text">{reel.chip}</span>
+            <span class="reel-chip-progress">{reel.topicProgress}%</span>
+          </div>
           <h2>{reel.title}</h2>
           <div class="reel-tabs" role="tablist">
             <button
@@ -158,13 +190,15 @@
                         <button
                           class={`reel-test-option ${
                             testSelections[reel.instanceId] === option.key
-                              ? testSelections[reel.instanceId] === parsed.answer
+                              ? testSelections[reel.instanceId] ===
+                                parsed.answer
                                 ? "selected correct"
                                 : "selected incorrect"
                               : ""
                           }`}
                           type="button"
-                          onclick={() => selectOption(reel, option.key)}
+                          onclick={() =>
+                            selectOption(reel, option.key, parsed.answer)}
                         >
                           <span class="reel-test-key">{option.key}</span>
                           <span>{option.text}</span>
@@ -185,7 +219,8 @@
                         <button
                           class="reel-test-next incorrect"
                           type="button"
-                          onclick={() => scrollToIndex((index + 1) % reels.length)}
+                          onclick={() =>
+                            scrollToIndex((index + 1) % reels.length)}
                         >
                           Next
                         </button>
@@ -302,12 +337,58 @@
     z-index: 1;
   }
 
-  .reel-chip {
+  .reel-chip-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    min-width: 180px;
+    overflow: hidden;
+  }
+
+  .reel-chip-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(132, 147, 74, 0.12);
+    border: 1px solid rgba(132, 147, 74, 0.25);
+    border-radius: 999px;
+  }
+
+  .reel-chip-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: var(--accent-green);
+    border-radius: 999px;
+    transition: width 0.5s ease;
+    opacity: 0.85;
+  }
+
+  .reel-chip-text {
+    position: relative;
+    z-index: 1;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     font-size: 0.7rem;
-    color: #656d3f;
+    color: var(--primary);
     font-weight: 700;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .reel-chip-progress {
+    position: relative;
+    z-index: 1;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--primary);
+    flex-shrink: 0;
   }
 
   .reel-content h2 {

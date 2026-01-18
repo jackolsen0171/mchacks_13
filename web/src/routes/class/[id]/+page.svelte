@@ -45,9 +45,17 @@
         <span>{data.topics?.length ?? 0} topics</span>
       </div>
       {#if data.topics?.length}
-        <div class="topic-pill-list">
-          {#each data.topics as topicName}
-            <span class="topic-pill">{topicName}</span>
+        <div class="topic-pill-grid">
+          {#each data.topics as topic}
+            <div class="topic-pill-wrapper">
+              <div class="topic-pill-bg"></div>
+              <div 
+                class="topic-pill-fill" 
+                style={`width: ${topic.progress}%`}
+              ></div>
+              <span class="topic-pill-text">{topic.name}</span>
+              <span class="topic-pill-progress">{topic.progress}%</span>
+            </div>
           {/each}
         </div>
       {:else}
@@ -229,24 +237,77 @@
     color: rgba(73, 40, 40, 0.6);
   }
 
-  .topic-pill-list {
+  .topic-pill-grid {
     margin-top: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
   }
 
-  .topic-pill {
-    padding: 0.45rem 0.85rem;
-    border-radius: 999px;
+  .topic-pill-wrapper {
+    position: relative;
+    height: 3rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+
+  .topic-pill-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(132, 147, 74, 0.15);
+    border: 1px solid rgba(132, 147, 74, 0.3);
+    border-radius: 0.75rem;
+  }
+
+  .topic-pill-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
     background: var(--accent-green);
-    color: #efe9e3;
+    border-radius: 0.75rem 0 0 0.75rem;
+    transition: width 0.5s ease;
+  }
+
+  .topic-pill-fill[style*="width: 100%"] {
+    border-radius: 0.75rem;
+  }
+
+  .topic-pill-text {
+    position: relative;
+    z-index: 1;
     font-size: 0.9rem;
     font-weight: 600;
+    color: var(--primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .topic-pill-progress {
+    position: relative;
+    z-index: 1;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin-left: 0.5rem;
+    flex-shrink: 0;
   }
 
   .empty-topic {
     margin: 1rem 0 0;
     color: rgba(73, 40, 40, 0.6);
+  }
+
+  @media (max-width: 500px) {
+    .topic-pill-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

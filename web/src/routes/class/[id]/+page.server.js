@@ -40,6 +40,20 @@ export async function load({ params }) {
     }
   }
 
+  // Handle both old format (strings) and new format (objects with progress)
+  const rawTopics = course.topics ?? [];
+  const topics = rawTopics.map(topic => {
+    if (typeof topic === 'string') {
+      // Legacy format: convert to new format
+      return { name: topic, progress: 0 };
+    }
+    // New format: ensure it has required fields
+    return {
+      name: topic.name ?? 'Unknown',
+      progress: typeof topic.progress === 'number' ? topic.progress : 0
+    };
+  });
+
   return {
     course: {
       id: course._id.toString(),
@@ -47,7 +61,7 @@ export async function load({ params }) {
       courseName: course.courseName
     },
     files: filesData,
-    topics: Array.from(course.topics ?? [])
+    topics: topics
   };
 }
 
@@ -65,6 +79,7 @@ export const actions = {
     }
 
     await database.collection('files').deleteMany({ courseId });
+    await database.collection('reels').deleteMany({ courseId });
     await database.collection('courses').deleteOne({ _id: courseId });
 
     throw redirect(303, '/');
